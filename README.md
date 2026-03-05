@@ -95,7 +95,7 @@ Sem1: 8.5 + Sem2: 9.0 + Sem3: 8.8 + Sem4: 9.2
 
 ## 🌐 Live Demo
 
-👉 [View Live Site](https://yourusername.github.io/your-repo-name)
+👉 [View Live Site](https://sgpa-cgpa-calculator-vit.vercel.app/)
 
 ---
 
