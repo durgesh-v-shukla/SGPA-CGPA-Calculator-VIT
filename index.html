@@ -39,12 +39,13 @@
             --mid-bg: rgba(251, 191, 36, 0.10);
             --low: #F87171;
             --low-bg: rgba(248, 113, 113, 0.10);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 60px rgba(139, 92, 246, 0.15);
             --glow-v: 0 0 40px rgba(139, 92, 246, 0.35);
             --radius: 16px;
             --radius-sm: 10px;
-            --max-width: 1000px;
-            --nav-height: 60px;
+            --max-width: 960px;
+            --nav-height: 64px;
         }
         @media (prefers-reduced-motion: reduce) {
             * {
@@ -59,9 +60,12 @@
             color: var(--text);
             min-height: 100vh;
             font-size: 15px;
-            line-height: 1.5;
+            line-height: 1.6;
             overflow-x: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* ── Aurora ── */
@@ -71,23 +75,23 @@
             z-index: 0;
             pointer-events: none;
             background:
-                radial-gradient(ellipse 800px 500px at 15% -10%, rgba(139, 92, 246, 0.28), transparent 60%),
-                radial-gradient(ellipse 700px 500px at 90% 10%, rgba(34, 211, 238, 0.18), transparent 60%),
-                radial-gradient(ellipse 600px 500px at 50% 100%, rgba(244, 114, 182, 0.12), transparent 60%);
-            animation: auroraShift 18s ease-in-out infinite alternate;
+                radial-gradient(ellipse 900px 600px at 20% -10%, rgba(139, 92, 246, 0.25), transparent 60%),
+                radial-gradient(ellipse 800px 600px at 80% 10%, rgba(34, 211, 238, 0.15), transparent 60%),
+                radial-gradient(ellipse 700px 500px at 50% 100%, rgba(244, 114, 182, 0.10), transparent 60%);
+            animation: auroraShift 20s ease-in-out infinite alternate;
         }
         @keyframes auroraShift {
             0% {
-                opacity: 0.85;
-                transform: translateY(0) scale(1);
+                opacity: 0.8;
+                transform: translateY(0) scale(1) rotate(0deg);
             }
             50% {
                 opacity: 1;
-                transform: translateY(-16px) scale(1.03);
+                transform: translateY(-20px) scale(1.05) rotate(1deg);
             }
             100% {
-                opacity: 0.85;
-                transform: translateY(0) scale(1);
+                opacity: 0.8;
+                transform: translateY(0) scale(1) rotate(0deg);
             }
         }
         .noise {
@@ -95,12 +99,12 @@
             inset: 0;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.025;
+            opacity: 0.02;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
         ::selection {
-            background: rgba(139, 92, 246, 0.35);
+            background: rgba(139, 92, 246, 0.4);
             color: #fff;
         }
 
@@ -120,37 +124,82 @@
             background: var(--violet);
         }
 
-        /* ── Nav ── */
+        /* ── Glow ring ── */
+        .glow-ring {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1200px;
+            height: 1200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: ringPulse 12s ease-in-out infinite alternate;
+        }
+        @keyframes ringPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* ─── Main wrapper ─── */
+        .app-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: var(--max-width);
+            padding: 0 clamp(16px, 3vw, 32px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ─── Nav ─── */
         .topbar {
             position: sticky;
             top: 0;
             z-index: 300;
-            backdrop-filter: blur(16px) saturate(160%);
-            -webkit-backdrop-filter: blur(16px) saturate(160%);
-            background: rgba(10, 11, 20, 0.72);
-            border-bottom: 1px solid var(--border-soft);
+            width: 100%;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(10, 11, 20, 0.6);
+            border-bottom: 1px solid rgba(42, 45, 74, 0.4);
             height: var(--nav-height);
             display: flex;
             align-items: center;
+            justify-content: center;
+            padding: 0 clamp(16px, 3vw, 32px);
+        }
+        .topbar-inner {
+            width: 100%;
+            max-width: var(--max-width);
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            padding: 0 clamp(16px, 4vw, 32px);
         }
         .brand {
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 10px;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: clamp(14px, 1.2vw, 18px);
-            letter-spacing: -0.2px;
+            font-size: clamp(15px, 1.2vw, 19px);
+            letter-spacing: -0.3px;
             color: var(--text);
         }
         .brand-dot {
-            width: 9px;
-            height: 9px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: var(--grad);
-            box-shadow: 0 0 12px rgba(139, 92, 246, 0.8);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
             animation: pulse 2.4s ease-in-out infinite;
             flex-shrink: 0;
         }
@@ -161,15 +210,15 @@
                 opacity: 1;
             }
             50% {
-                transform: scale(1.35);
-                opacity: 0.6;
+                transform: scale(1.4);
+                opacity: 0.5;
             }
         }
         .topbar-right {
-            font-size: clamp(10px, 0.9vw, 12px);
+            font-size: clamp(10px, 0.85vw, 12.5px);
             color: var(--text-faint);
-            font-weight: 600;
-            letter-spacing: 0.3px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
             text-align: right;
         }
         .topbar-right strong {
@@ -178,25 +227,20 @@
         }
         .topbar-right .sep {
             display: inline-block;
-            margin: 0 4px;
+            margin: 0 6px;
             color: var(--border);
         }
 
-        /* ── Container ── */
-        .container {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 0 clamp(14px, 3vw, 24px);
-        }
-
-        /* ── Hero ── */
+        /* ─── Hero ─── */
         .hero {
             position: relative;
             z-index: 1;
-            padding: clamp(32px, 5vw, 56px) 0 clamp(20px, 3vw, 32px);
+            width: 100%;
+            padding: clamp(40px, 6vw, 72px) 0 clamp(24px, 3vw, 40px);
+            text-align: center;
             opacity: 0;
-            transform: translateY(18px);
-            animation: riseIn 0.7s cubic-bezier(.22, .9, .28, 1) forwards;
+            transform: translateY(20px);
+            animation: riseIn 0.8s cubic-bezier(.22, .9, .28, 1) forwards;
         }
         @keyframes riseIn {
             to {
@@ -208,18 +252,19 @@
         .hero-eyebrow {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            font-size: clamp(10px, 0.85vw, 12px);
-            font-weight: 700;
-            letter-spacing: 0.3px;
+            gap: 8px;
+            font-size: clamp(10px, 0.8vw, 12px);
+            font-weight: 600;
+            letter-spacing: 0.4px;
             color: var(--cyan);
-            background: rgba(34, 211, 238, 0.08);
-            border: 1px solid rgba(34, 211, 238, 0.25);
-            padding: 5px 14px 5px 12px;
-            border-radius: 20px;
-            margin-bottom: clamp(12px, 1.5vw, 18px);
+            background: rgba(34, 211, 238, 0.07);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            padding: 6px 16px 6px 14px;
+            border-radius: 24px;
             line-height: 1.3;
             flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: clamp(16px, 2vw, 24px);
         }
         .hero-eyebrow .sub {
             color: var(--text-dim);
@@ -229,12 +274,13 @@
             color: var(--border);
             font-weight: 300;
         }
+
         .hero h1 {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: clamp(1.8rem, 4.8vw, 3.2rem);
-            line-height: 1.08;
-            letter-spacing: -1px;
+            font-size: clamp(2rem, 5vw, 3.6rem);
+            line-height: 1.06;
+            letter-spacing: -1.5px;
         }
         .hero h1 .grad-text {
             background: var(--grad);
@@ -243,109 +289,119 @@
             color: transparent;
         }
         .hero-desc {
-            font-size: clamp(13px, 1.05vw, 15px);
+            font-size: clamp(13px, 1vw, 15.5px);
             color: var(--text-dim);
-            margin-top: clamp(10px, 1.2vw, 16px);
-            max-width: 600px;
-            line-height: 1.7;
+            margin-top: clamp(12px, 1.5vw, 18px);
+            max-width: 580px;
+            line-height: 1.8;
+            margin-left: auto;
+            margin-right: auto;
         }
         .hero-config {
             display: flex;
-            gap: clamp(8px, 1.2vw, 14px);
-            margin-top: clamp(16px, 2vw, 24px);
+            gap: clamp(10px, 1.2vw, 16px);
+            margin-top: clamp(20px, 2.5vw, 30px);
             flex-wrap: wrap;
+            justify-content: center;
         }
         .cfg-field {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
+            align-items: center;
         }
         .cfg-field label {
             font-size: 10px;
             font-weight: 700;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.4px;
             text-transform: uppercase;
             color: var(--text-faint);
         }
         .cfg-field input {
             font-family: 'Inter', sans-serif;
-            font-size: clamp(13px, 1vw, 14px);
+            font-size: clamp(13px, 0.95vw, 14.5px);
             font-weight: 600;
             color: var(--text);
             background: var(--surface);
             border: 1.5px solid var(--border);
             border-radius: var(--radius-sm);
-            padding: 9px 14px;
-            min-width: clamp(150px, 16vw, 200px);
-            transition: border-color .2s, box-shadow .2s;
+            padding: 10px 18px;
+            min-width: clamp(160px, 16vw, 220px);
+            text-align: center;
+            transition: border-color .25s, box-shadow .25s;
         }
         .cfg-field input:focus {
             outline: none;
             border-color: var(--violet);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+            box-shadow: 0 0 0 5px rgba(139, 92, 246, 0.12);
         }
 
-        /* ── Quote Card (carousel) ── */
+        /* ─── Quote Card ─── */
         .quote-card {
             position: relative;
             z-index: 1;
-            padding: 0 0 clamp(16px, 2vw, 24px);
+            width: 100%;
+            padding: 0 0 clamp(20px, 2.5vw, 32px);
             opacity: 0;
-            animation: riseIn 0.7s cubic-bezier(.22, .9, .28, 1) forwards;
-            animation-delay: 0.08s;
+            animation: riseIn 0.8s cubic-bezier(.22, .9, .28, 1) forwards;
+            animation-delay: 0.1s;
         }
         .quote-inner {
-            background: var(--surface);
+            background: linear-gradient(135deg, var(--surface), var(--bg2));
             border: 1px solid var(--border-soft);
             border-radius: var(--radius);
-            padding: clamp(14px, 1.5vw, 20px) clamp(18px, 2vw, 26px);
+            padding: clamp(16px, 1.8vw, 24px) clamp(20px, 2.5vw, 32px);
             display: flex;
             align-items: center;
-            gap: clamp(10px, 1.5vw, 18px);
-            box-shadow: var(--shadow);
+            gap: clamp(12px, 1.5vw, 20px);
+            box-shadow: var(--shadow), var(--shadow-glow);
             transition: background 0.3s;
+            backdrop-filter: blur(4px);
         }
         .quote-inner .q-icon {
-            font-size: clamp(18px, 1.8vw, 24px);
+            font-size: clamp(20px, 1.8vw, 26px);
             flex-shrink: 0;
-            opacity: 0.7;
+            opacity: 0.8;
             transition: transform 0.3s;
         }
         .quote-inner .q-text {
-            font-size: clamp(12.5px, 1.05vw, 14.5px);
+            font-size: clamp(13px, 1.05vw, 15px);
             color: var(--text-dim);
             font-style: italic;
-            line-height: 1.6;
+            line-height: 1.7;
             flex: 1;
             transition: opacity 0.4s ease, transform 0.4s ease;
-            min-height: 2.4em;
+            min-height: 2.6em;
+            text-align: center;
         }
         .quote-inner .q-text strong {
             color: var(--text);
             font-style: normal;
         }
         .quote-inner .q-emoji {
-            font-size: clamp(16px, 1.5vw, 20px);
+            font-size: clamp(18px, 1.5vw, 22px);
             flex-shrink: 0;
-            opacity: 0.7;
+            opacity: 0.8;
         }
         .quote-inner.fade .q-text {
             opacity: 0;
-            transform: translateY(4px);
+            transform: translateY(6px);
         }
 
-        /* ── Page ── */
+        /* ─── Page ─── */
         .page {
             position: relative;
             z-index: 1;
-            padding: clamp(4px, 0.5vw, 8px) 0 clamp(40px, 6vw, 80px);
+            width: 100%;
+            padding: clamp(4px, 0.5vw, 8px) 0 clamp(40px, 5vw, 72px);
         }
 
         .sec-head {
             display: flex;
             align-items: center;
-            gap: clamp(10px, 1.2vw, 14px);
-            margin: clamp(32px, 4vw, 48px) 0 4px;
+            gap: clamp(12px, 1.2vw, 16px);
+            margin: clamp(36px, 4.5vw, 52px) 0 6px;
+            justify-content: center;
         }
         .sec-head:first-child {
             margin-top: 4px;
@@ -353,86 +409,92 @@
         .sec-badge {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: clamp(11px, 0.9vw, 13px);
-            width: clamp(26px, 2.2vw, 30px);
-            height: clamp(26px, 2.2vw, 30px);
-            border-radius: 9px;
+            font-size: clamp(11px, 0.85vw, 13px);
+            width: clamp(28px, 2.2vw, 32px);
+            height: clamp(28px, 2.2vw, 32px);
+            border-radius: 10px;
             background: var(--grad);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #08090F;
             flex-shrink: 0;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
         }
         .sec-title {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: clamp(18px, 1.8vw, 23px);
-            letter-spacing: -0.3px;
+            font-size: clamp(19px, 1.8vw, 24px);
+            letter-spacing: -0.4px;
         }
         .sec-sub {
             font-size: clamp(12px, 0.9vw, 14px);
             color: var(--text-faint);
-            margin: 2px 0 clamp(14px, 1.5vw, 20px) clamp(36px, 3.5vw, 44px);
+            margin: 2px 0 clamp(16px, 1.8vw, 24px);
+            text-align: center;
         }
 
-        /* ── Card ── */
+        /* ─── Card ─── */
         .card {
-            background: linear-gradient(180deg, var(--surface) 0%, var(--bg2) 100%);
+            background: linear-gradient(160deg, var(--surface) 0%, var(--bg2) 100%);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: var(--shadow);
-            margin-bottom: clamp(16px, 1.8vw, 24px);
+            box-shadow: var(--shadow), var(--shadow-glow);
+            margin-bottom: clamp(18px, 2vw, 28px);
             opacity: 0;
             transform: translateY(24px);
-            animation: riseIn 0.7s cubic-bezier(.22, .9, .28, 1) forwards;
-            animation-delay: 0.12s;
+            animation: riseIn 0.8s cubic-bezier(.22, .9, .28, 1) forwards;
+            animation-delay: 0.15s;
+            backdrop-filter: blur(4px);
         }
         .card-strip {
-            padding: clamp(12px, 1.2vw, 16px) clamp(16px, 2vw, 24px);
+            padding: clamp(14px, 1.4vw, 20px) clamp(18px, 2vw, 28px);
             border-bottom: 1px solid var(--border-soft);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
         .card-strip-l {
-            font-size: clamp(12px, 1vw, 14px);
+            font-size: clamp(12px, 1vw, 14.5px);
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         .credit-badge {
-            font-size: clamp(10px, 0.8vw, 11.5px);
+            font-size: clamp(10px, 0.8vw, 12px);
             font-weight: 700;
-            background: rgba(139, 92, 246, 0.14);
+            background: rgba(139, 92, 246, 0.15);
             color: #C4B5FD;
             border: 1px solid rgba(139, 92, 246, 0.3);
-            padding: 3px 10px;
+            padding: 3px 12px;
             border-radius: 20px;
+            letter-spacing: 0.3px;
         }
         .card-strip-r {
-            font-size: clamp(9.5px, 0.75vw, 11px);
+            font-size: clamp(9.5px, 0.75vw, 11.5px);
             color: var(--text-faint);
             font-weight: 500;
+            letter-spacing: 0.2px;
         }
 
-        /* ── Scenario Buttons ── */
+        /* ─── Scenario Buttons ─── */
         .scenario-section {
-            padding: clamp(12px, 1.2vw, 18px) clamp(16px, 2vw, 24px) clamp(10px, 1vw, 14px);
+            padding: clamp(14px, 1.4vw, 20px) clamp(18px, 2vw, 28px) clamp(12px, 1.2vw, 16px);
             border-bottom: 1px solid var(--border-soft);
         }
         .scenario-label {
             font-size: clamp(9.5px, 0.75vw, 11px);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.4px;
             color: var(--text-faint);
-            margin-bottom: clamp(8px, 0.8vw, 12px);
+            margin-bottom: clamp(10px, 1vw, 14px);
+            text-align: center;
         }
         .scenario-row {
             display: flex;
@@ -443,6 +505,7 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
             scrollbar-color: var(--border) transparent;
+            justify-content: center;
         }
         .scenario-row::-webkit-scrollbar {
             height: 4px;
@@ -454,19 +517,24 @@
             background: var(--border);
             border-radius: 4px;
         }
+        @media (max-width: 640px) {
+            .scenario-row {
+                justify-content: flex-start;
+            }
+        }
 
         .scenario-btn {
             flex: 0 0 auto;
             font-family: 'Inter', sans-serif;
-            font-size: clamp(11px, 0.85vw, 12.5px);
+            font-size: clamp(11px, 0.85vw, 13px);
             font-weight: 700;
-            padding: clamp(6px, 0.6vw, 8px) clamp(13px, 1.2vw, 18px);
-            border-radius: 20px;
+            padding: clamp(6px, 0.6vw, 9px) clamp(14px, 1.3vw, 20px);
+            border-radius: 24px;
             border: 1.5px solid var(--border);
             background: var(--surface-2);
             color: var(--text-dim);
             cursor: pointer;
-            transition: all .18s;
+            transition: all .2s ease;
             white-space: nowrap;
             -webkit-tap-highlight-color: transparent;
         }
@@ -474,7 +542,8 @@
             border-color: var(--violet);
             color: var(--text);
             background: rgba(139, 92, 246, 0.08);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
         }
         .scenario-btn:active {
             transform: scale(0.96);
@@ -485,7 +554,8 @@
             background: rgba(139, 92, 246, 0.12);
         }
         .scenario-btn.accent:hover {
-            background: rgba(139, 92, 246, 0.20);
+            background: rgba(139, 92, 246, 0.22);
+            box-shadow: 0 4px 24px rgba(139, 92, 246, 0.25);
         }
         .scenario-btn.danger {
             border-color: rgba(248, 113, 113, 0.3);
@@ -496,10 +566,10 @@
             background: rgba(248, 113, 113, 0.08);
         }
         .scenario-btn .emoji {
-            margin-right: 4px;
+            margin-right: 5px;
         }
 
-        /* ── Table ── */
+        /* ─── Table ─── */
         .table-scroll {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -507,10 +577,10 @@
         .subj-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 680px;
+            min-width: 700px;
         }
         .subj-table thead th {
-            padding: clamp(10px, 0.9vw, 13px) clamp(14px, 1.5vw, 22px);
+            padding: clamp(10px, 0.9vw, 14px) clamp(16px, 1.8vw, 26px);
             font-size: clamp(9px, 0.7vw, 10.5px);
             font-weight: 700;
             text-transform: uppercase;
@@ -525,16 +595,16 @@
         }
         .subj-table tbody tr {
             border-bottom: 1px solid var(--border-soft);
-            transition: background .15s;
+            transition: background .2s ease;
         }
         .subj-table tbody tr:last-child {
             border-bottom: none;
         }
         .subj-table tbody tr:hover {
-            background: rgba(139, 92, 246, 0.045);
+            background: rgba(139, 92, 246, 0.04);
         }
         .subj-table td {
-            padding: clamp(10px, 0.9vw, 14px) clamp(14px, 1.5vw, 22px);
+            padding: clamp(10px, 0.9vw, 15px) clamp(16px, 1.8vw, 26px);
             vertical-align: middle;
         }
         .subj-table td.c {
@@ -548,7 +618,7 @@
             white-space: nowrap;
         }
         .subj-name {
-            font-size: clamp(12px, 0.95vw, 14px);
+            font-size: clamp(12px, 0.95vw, 14.5px);
             font-weight: 600;
             color: var(--text);
             line-height: 1.3;
@@ -566,8 +636,8 @@
             background: var(--surface-2);
             border: 1px solid var(--border);
             border-radius: 5px;
-            padding: 1px 6px;
-            font-size: clamp(8.5px, 0.65vw, 10px);
+            padding: 1px 7px;
+            font-size: clamp(8.5px, 0.6vw, 10px);
             color: var(--text-dim);
             font-weight: 600;
         }
@@ -575,14 +645,14 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: rgba(34, 211, 238, 0.1);
+            background: rgba(34, 211, 238, 0.08);
             color: #67E8F9;
-            border: 1px solid rgba(34, 211, 238, 0.25);
-            font-size: clamp(11px, 0.85vw, 12.5px);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            font-size: clamp(11px, 0.85vw, 13px);
             font-weight: 700;
-            padding: 4px 12px;
+            padding: 4px 13px;
             border-radius: 20px;
-            min-width: 38px;
+            min-width: 40px;
         }
 
         /* ── Grade select ── */
@@ -596,24 +666,24 @@
             font-family: 'Inter', sans-serif;
             font-size: clamp(12px, 0.9vw, 13.5px);
             font-weight: 600;
-            padding: 8px 30px 8px 12px;
+            padding: 8px 30px 8px 13px;
             border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: border-color .15s, background-color .15s, transform .1s;
+            transition: border-color .2s, background-color .2s, transform .1s, box-shadow .2s;
             width: 100%;
-            max-width: 170px;
+            max-width: 175px;
             min-width: 120px;
         }
         .gsel:hover {
             border-color: #3D4166;
         }
         .gsel:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
         .gsel:focus {
             outline: none;
             border-color: var(--violet);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+            box-shadow: 0 0 0 5px rgba(139, 92, 246, 0.12);
         }
         .gsel.g-hi {
             border-color: rgba(52, 211, 153, 0.5);
@@ -660,7 +730,7 @@
         .mob-row-top {
             display: flex;
             align-items: center;
-            gap: 11px;
+            gap: 12px;
         }
         .mob-idx {
             width: 26px;
@@ -705,18 +775,19 @@
 
         /* ── Legend ── */
         .legend {
-            padding: clamp(10px, 1vw, 14px) clamp(16px, 2vw, 24px);
+            padding: clamp(10px, 1vw, 14px) clamp(18px, 2vw, 28px);
             border-top: 1px solid var(--border-soft);
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             background: rgba(255, 255, 255, 0.015);
+            justify-content: center;
         }
         .lg-chip {
             background: var(--surface-2);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 3px 10px;
+            padding: 3px 11px;
             font-size: clamp(9.5px, 0.7vw, 11px);
             color: var(--text-dim);
             display: flex;
@@ -734,25 +805,26 @@
 
         /* ── Result footer ── */
         .result-foot {
-            padding: clamp(18px, 2vw, 26px) clamp(16px, 2vw, 24px);
-            background: radial-gradient(ellipse 500px 260px at 85% 30%, rgba(139, 92, 246, 0.08), transparent 70%);
+            padding: clamp(20px, 2.2vw, 30px) clamp(18px, 2vw, 28px);
+            background: radial-gradient(ellipse 600px 300px at 50% 30%, rgba(139, 92, 246, 0.06), transparent 70%);
             border-top: 1px solid var(--border-soft);
             display: flex;
-            align-items: stretch;
-            gap: clamp(16px, 2.5vw, 32px);
+            align-items: center;
+            gap: clamp(20px, 3vw, 40px);
             flex-wrap: wrap;
+            justify-content: center;
         }
         .result-left {
             flex: 2;
-            min-width: 220px;
+            min-width: 240px;
             display: flex;
             flex-direction: column;
             gap: clamp(10px, 1vw, 14px);
         }
         .result-fml {
-            font-size: clamp(12px, 0.95vw, 14px);
+            font-size: clamp(12px, 0.95vw, 14.5px);
             color: var(--text-dim);
-            line-height: 1.9;
+            line-height: 2;
         }
         .result-fml .hl {
             color: var(--text);
@@ -762,7 +834,7 @@
             font-family: 'Space Grotesk', sans-serif;
             background: var(--surface-2);
             border: 1px solid var(--border);
-            padding: 1px 7px;
+            padding: 1px 8px;
             border-radius: 5px;
             font-size: clamp(10px, 0.8vw, 12px);
             color: #C4B5FD;
@@ -770,7 +842,7 @@
         }
         .result-fml .big-number {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+            font-size: clamp(1.3rem, 1.8vw, 1.8rem);
             font-weight: 700;
             color: var(--text);
             letter-spacing: -0.5px;
@@ -778,24 +850,25 @@
         .result-fml .operator {
             color: var(--text-faint);
             font-weight: 500;
-            padding: 0 4px;
+            padding: 0 6px;
         }
 
         .bar-wrap {
             width: 100%;
-            max-width: 420px;
+            max-width: 460px;
             height: 6px;
             background: var(--surface-2);
             border-radius: 4px;
             overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
         }
         .bar-fill {
             height: 100%;
             background: var(--grad);
             border-radius: 4px;
             width: 0%;
-            transition: width .7s cubic-bezier(.22, .9, .3, 1);
-            box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+            transition: width .8s cubic-bezier(.22, .9, .3, 1);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
         }
 
         .result-right {
@@ -803,36 +876,34 @@
             min-width: 160px;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
         }
         .orb-wrap {
             display: flex;
             align-items: center;
-            gap: clamp(12px, 1.5vw, 20px);
-            width: 100%;
-            justify-content: flex-end;
+            gap: clamp(14px, 1.8vw, 24px);
         }
         .orb-meta {
             text-align: right;
         }
         .orb-meta .lbl {
-            font-size: clamp(8px, 0.65vw, 9.5px);
+            font-size: clamp(8px, 0.65vw, 10px);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.8px;
+            letter-spacing: 2px;
             color: var(--text-faint);
         }
         .orb-meta .tag {
-            font-size: clamp(10px, 0.8vw, 11.5px);
+            font-size: clamp(10px, 0.8vw, 12px);
             color: var(--text-dim);
             font-weight: 500;
             margin-top: 2px;
         }
         .orb {
-            width: clamp(70px, 7vw, 88px);
-            height: clamp(70px, 7vw, 88px);
+            width: clamp(76px, 7.5vw, 96px);
+            height: clamp(76px, 7.5vw, 96px);
             border-radius: 50%;
             flex-shrink: 0;
             display: flex;
@@ -843,22 +914,22 @@
             border: 1.5px solid var(--border);
             transform: scale(0.88);
             opacity: 0.5;
-            transition: all .55s cubic-bezier(.34, 1.56, .64, 1);
+            transition: all .6s cubic-bezier(.34, 1.56, .64, 1);
         }
         .orb.filled {
             transform: scale(1);
             opacity: 1;
-            background: radial-gradient(circle at 30% 25%, rgba(139, 92, 246, 0.22), var(--surface-2) 70%);
+            background: radial-gradient(circle at 30% 25%, rgba(139, 92, 246, 0.25), var(--surface-2) 70%);
             border-color: transparent;
             box-shadow: var(--glow-v), inset 0 0 0 1.5px rgba(139, 92, 246, 0.4);
-            animation: orbPop .55s cubic-bezier(.34, 1.56, .64, 1);
+            animation: orbPop .6s cubic-bezier(.34, 1.56, .64, 1);
         }
         @keyframes orbPop {
             0% {
-                transform: scale(0.7) rotate(-6deg);
+                transform: scale(0.7) rotate(-8deg);
             }
             60% {
-                transform: scale(1.08) rotate(2deg);
+                transform: scale(1.1) rotate(3deg);
             }
             100% {
                 transform: scale(1) rotate(0);
@@ -867,17 +938,17 @@
         .orb-num {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: clamp(1.3rem, 2vw, 1.9rem);
+            font-size: clamp(1.4rem, 2.2vw, 2.1rem);
             line-height: 1;
             letter-spacing: -0.5px;
-            transition: all .25s;
+            transition: all .3s;
         }
         .orb-cap {
-            font-size: clamp(6.5px, 0.55vw, 8px);
+            font-size: clamp(6.5px, 0.55vw, 8.5px);
             font-weight: 700;
-            letter-spacing: 1.4px;
+            letter-spacing: 1.6px;
             color: var(--text-faint);
-            margin-top: 2px;
+            margin-top: 3px;
         }
         .orb.filled .orb-cap {
             color: var(--cyan);
@@ -887,18 +958,19 @@
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text-faint);
-            border-radius: 6px;
-            padding: 4px 10px;
+            border-radius: 7px;
+            padding: 4px 12px;
             font-size: clamp(9px, 0.7vw, 10.5px);
             font-weight: 600;
             cursor: pointer;
-            transition: all .15s;
+            transition: all .2s ease;
             font-family: 'Inter', sans-serif;
         }
         .copy-btn:hover {
             border-color: var(--violet);
             color: var(--text);
             background: rgba(139, 92, 246, 0.08);
+            transform: translateY(-1px);
         }
         .copy-btn:active {
             transform: scale(0.94);
@@ -906,7 +978,7 @@
 
         .result-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             align-items: center;
             margin-top: 2px;
             flex-wrap: wrap;
@@ -914,28 +986,29 @@
         .result-actions .save-msg {
             font-size: clamp(9px, 0.7vw, 10.5px);
             color: var(--text-faint);
+            opacity: 0.7;
         }
 
         /* ── CGPA section ── */
         .cg-body {
-            padding: clamp(16px, 1.8vw, 24px) clamp(14px, 2vw, 24px) clamp(18px, 2vw, 26px);
+            padding: clamp(18px, 2vw, 28px) clamp(16px, 2vw, 28px) clamp(20px, 2.2vw, 30px);
         }
         .notice {
-            background: rgba(139, 92, 246, 0.06);
-            border: 1px solid rgba(139, 92, 246, 0.22);
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.15);
             border-radius: 12px;
-            padding: clamp(12px, 1vw, 15px) clamp(14px, 1.5vw, 18px);
+            padding: clamp(12px, 1vw, 16px) clamp(14px, 1.5vw, 20px);
             font-size: clamp(11.5px, 0.85vw, 13px);
             color: #C4B5FD;
-            margin-bottom: clamp(16px, 1.8vw, 22px);
-            line-height: 1.65;
+            margin-bottom: clamp(18px, 2vw, 26px);
+            line-height: 1.7;
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: flex-start;
         }
         .notice svg {
             flex-shrink: 0;
-            margin-top: 1px;
+            margin-top: 2px;
             color: var(--violet);
         }
         .notice strong {
@@ -946,13 +1019,13 @@
         .sem-row {
             display: flex;
             align-items: center;
-            gap: clamp(10px, 1.2vw, 16px);
-            padding: clamp(10px, 0.9vw, 13px) clamp(12px, 1.2vw, 16px);
+            gap: clamp(10px, 1.2vw, 18px);
+            padding: clamp(10px, 0.9vw, 14px) clamp(12px, 1.2vw, 18px);
             border: 1.5px solid var(--border);
             border-radius: 12px;
             margin-bottom: 8px;
             background: var(--surface-2);
-            transition: border-color .2s, background .2s, transform .15s;
+            transition: border-color .25s, background .25s, transform .15s;
             opacity: 0;
             transform: translateX(-10px);
             animation: slideIn .4s cubic-bezier(.22, .9, .3, 1) forwards;
@@ -965,15 +1038,17 @@
         }
         .sem-row.is-current {
             border-color: rgba(139, 92, 246, 0.5);
-            background: rgba(139, 92, 246, 0.08);
+            background: rgba(139, 92, 246, 0.07);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.05);
         }
         .sem-row-idx {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             font-size: clamp(12px, 0.9vw, 14.5px);
             color: var(--text-faint);
-            width: 24px;
+            width: 26px;
             flex-shrink: 0;
+            text-align: center;
         }
         .sem-row.is-current .sem-row-idx {
             color: #C4B5FD;
@@ -983,22 +1058,22 @@
             min-width: 0;
         }
         .sem-row-label .t1 {
-            font-size: clamp(11.5px, 0.9vw, 13px);
+            font-size: clamp(11.5px, 0.9vw, 13.5px);
             font-weight: 700;
             color: var(--text);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
         }
         .sem-row-label .t1 .current-badge {
             color: #67E8F9;
             font-weight: 600;
             font-size: clamp(9px, 0.7vw, 10.5px);
-            background: rgba(34, 211, 238, 0.10);
-            border: 1px solid rgba(34, 211, 238, 0.20);
-            padding: 1px 8px;
-            border-radius: 12px;
+            background: rgba(34, 211, 238, 0.08);
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            padding: 1px 10px;
+            border-radius: 14px;
         }
         .sem-row-label .t2 {
             font-size: clamp(9px, 0.65vw, 10.5px);
@@ -1010,20 +1085,20 @@
             border: 1.5px solid var(--border);
             color: var(--text);
             font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(13px, 1vw, 15.5px);
+            font-size: clamp(13px, 1vw, 16px);
             font-weight: 700;
             padding: 8px 8px;
             border-radius: 9px;
-            width: clamp(68px, 6vw, 90px);
+            width: clamp(68px, 6vw, 92px);
             text-align: center;
-            transition: all .15s;
+            transition: all .2s;
             -webkit-appearance: none;
             flex-shrink: 0;
         }
         .sem-input:focus {
             outline: none;
             border-color: var(--violet);
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+            box-shadow: 0 0 0 5px rgba(139, 92, 246, 0.12);
         }
         .sem-input::placeholder {
             color: var(--text-faint);
@@ -1031,7 +1106,7 @@
             font-size: clamp(11px, 0.8vw, 12.5px);
         }
         .sem-input:read-only {
-            opacity: 0.7;
+            opacity: 0.6;
             cursor: default;
         }
         .sem-row-del {
@@ -1046,43 +1121,44 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all .15s;
+            transition: all .2s;
         }
         .sem-row-del:hover {
             border-color: #F87171;
             color: #F87171;
-            background: rgba(248, 113, 113, 0.1);
+            background: rgba(248, 113, 113, 0.08);
             transform: scale(1.06);
         }
 
         .btn-row {
             display: flex;
             gap: 10px;
-            margin: clamp(12px, 1.2vw, 18px) 0 clamp(16px, 1.8vw, 22px);
+            margin: clamp(14px, 1.4vw, 20px) 0 clamp(18px, 2vw, 26px);
             flex-wrap: wrap;
+            justify-content: center;
         }
         .btn {
             font-family: 'Inter', sans-serif;
             font-size: clamp(12px, 0.9vw, 13.5px);
             font-weight: 700;
-            padding: clamp(10px, 0.9vw, 12px) clamp(16px, 1.5vw, 20px);
-            border-radius: 11px;
+            padding: clamp(10px, 0.9vw, 13px) clamp(18px, 1.8vw, 24px);
+            border-radius: 12px;
             border: none;
             cursor: pointer;
-            transition: all .18s;
+            transition: all .2s ease;
             -webkit-tap-highlight-color: transparent;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
+            gap: 8px;
         }
         .btn-add {
             background: var(--grad);
             color: #08090F;
-            box-shadow: 0 4px 20px -6px rgba(139, 92, 246, 0.6);
+            box-shadow: 0 4px 24px -6px rgba(139, 92, 246, 0.5);
         }
         .btn-add:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 26px -6px rgba(139, 92, 246, 0.75);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px -6px rgba(139, 92, 246, 0.7);
         }
         .btn-add:active {
             transform: translateY(0) scale(0.97);
@@ -1096,42 +1172,40 @@
             border-color: var(--low);
             color: var(--low);
             background: rgba(248, 113, 113, 0.06);
+            transform: translateY(-2px);
         }
         .btn-reset:active {
             transform: scale(0.97);
         }
 
         .cg-result {
-            background: radial-gradient(ellipse 500px 300px at 85% 30%, rgba(34, 211, 238, 0.08), transparent 70%);
+            background: radial-gradient(ellipse 600px 300px at 50% 30%, rgba(34, 211, 238, 0.05), transparent 70%);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: clamp(18px, 2vw, 24px) clamp(16px, 2vw, 24px);
+            padding: clamp(20px, 2.2vw, 28px) clamp(18px, 2vw, 28px);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: clamp(14px, 2vw, 22px);
+            gap: clamp(16px, 2vw, 28px);
         }
         .cg-fml {
-            font-size: clamp(11.5px, 0.85vw, 13px);
+            font-size: clamp(11.5px, 0.85vw, 13.5px);
             color: var(--text-dim);
-            line-height: 2;
+            line-height: 2.1;
             flex: 1;
-            min-width: 170px;
-        }
-        .cg-fml b {
-            color: var(--text);
+            min-width: 180px;
         }
         .cg-fml .big-number {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+            font-size: clamp(1.1rem, 1.4vw, 1.5rem);
             font-weight: 700;
             color: var(--text);
         }
         .cg-fml .operator {
             color: var(--text-faint);
             font-weight: 500;
-            padding: 0 4px;
+            padding: 0 6px;
         }
         .cg-fml .hl {
             color: var(--text);
@@ -1141,9 +1215,9 @@
             font-family: 'Space Grotesk', sans-serif;
             background: var(--surface-2);
             border: 1px solid var(--border);
-            padding: 1px 7px;
+            padding: 1px 8px;
             border-radius: 5px;
-            font-size: clamp(10px, 0.75vw, 11.5px);
+            font-size: clamp(10px, 0.75vw, 12px);
             color: #C4B5FD;
         }
 
@@ -1159,16 +1233,16 @@
             font-size: clamp(8px, 0.6vw, 9.5px);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.8px;
+            letter-spacing: 2px;
             color: var(--text-faint);
             margin-bottom: 4px;
         }
         .cg-big {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-size: clamp(2.4rem, 5.5vw, 4rem);
             line-height: 1;
-            letter-spacing: -1.5px;
+            letter-spacing: -2px;
             background: var(--grad);
             -webkit-background-clip: text;
             background-clip: text;
@@ -1182,33 +1256,36 @@
         }
         .perf-tag {
             display: inline-block;
-            margin-top: 4px;
-            font-size: clamp(10px, 0.75vw, 11.5px);
+            margin-top: 6px;
+            font-size: clamp(10px, 0.75vw, 12px);
             font-weight: 700;
             letter-spacing: 0.3px;
-            padding: 3px 14px;
+            padding: 3px 16px;
             border-radius: 20px;
         }
 
-        /* ── About Card ── */
+        /* ─── About Card ─── */
         .about-card {
             position: relative;
             z-index: 1;
-            padding: 0 0 clamp(24px, 3vw, 36px);
+            width: 100%;
+            padding: 0 0 clamp(28px, 3.5vw, 44px);
         }
         .about-inner {
-            background: var(--surface);
+            background: linear-gradient(135deg, var(--surface), var(--bg2));
             border: 1px solid var(--border-soft);
             border-radius: var(--radius);
-            padding: clamp(16px, 1.8vw, 22px) clamp(18px, 2vw, 26px);
-            box-shadow: var(--shadow);
+            padding: clamp(18px, 2vw, 26px) clamp(20px, 2.5vw, 32px);
+            box-shadow: var(--shadow), var(--shadow-glow);
             display: flex;
             align-items: center;
-            gap: clamp(12px, 1.5vw, 20px);
+            gap: clamp(14px, 1.8vw, 24px);
             flex-wrap: wrap;
+            justify-content: center;
+            text-align: center;
         }
         .about-inner .about-icon {
-            font-size: clamp(22px, 2vw, 30px);
+            font-size: clamp(24px, 2.2vw, 32px);
             flex-shrink: 0;
         }
         .about-inner .about-text {
@@ -1217,51 +1294,53 @@
         }
         .about-inner .about-text h3 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(14px, 1.1vw, 16px);
+            font-size: clamp(14px, 1.1vw, 17px);
             font-weight: 700;
             color: var(--text);
         }
         .about-inner .about-text p {
-            font-size: clamp(11.5px, 0.85vw, 13px);
+            font-size: clamp(11.5px, 0.85vw, 13.5px);
             color: var(--text-dim);
-            line-height: 1.6;
-            margin-top: 2px;
+            line-height: 1.7;
+            margin-top: 3px;
         }
         .about-inner .about-text .vit-tag {
             display: inline-block;
-            background: rgba(139, 92, 246, 0.12);
+            background: rgba(139, 92, 246, 0.10);
             color: #C4B5FD;
             font-size: clamp(9px, 0.65vw, 10.5px);
             font-weight: 700;
-            padding: 2px 10px;
-            border-radius: 12px;
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 2px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(139, 92, 246, 0.15);
             margin-top: 4px;
         }
 
-        /* ── Footer ── */
+        /* ─── Footer ─── */
         .foot-note {
             position: relative;
             z-index: 1;
+            width: 100%;
             max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 6px clamp(16px, 3vw, 24px) clamp(32px, 4vw, 48px);
-            font-size: clamp(10.5px, 0.8vw, 12px);
+            padding: 6px 0 clamp(32px, 4vw, 50px);
+            font-size: clamp(10.5px, 0.8vw, 12.5px);
             color: var(--text-faint);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px;
+            text-align: center;
+            justify-content: center;
         }
         .foot-note .love {
             color: var(--pink);
         }
 
-        /* ── Toast ── */
+        /* ─── Toast ─── */
         .toast {
             position: fixed;
-            bottom: 26px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%) translateY(24px);
             background: var(--surface-2);
@@ -1269,17 +1348,19 @@
             border: 1px solid var(--border);
             font-size: clamp(11.5px, 0.85vw, 13px);
             font-weight: 600;
-            padding: 12px 22px;
-            border-radius: 12px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            padding: 13px 26px;
+            border-radius: 14px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
             opacity: 0;
             pointer-events: none;
-            transition: all .35s cubic-bezier(.22, .9, .3, 1);
+            transition: all .4s cubic-bezier(.22, .9, .3, 1);
             z-index: 400;
             display: flex;
             align-items: center;
-            gap: 9px;
-            max-width: 90vw;
+            gap: 10px;
+            max-width: 92vw;
+            backdrop-filter: blur(12px);
+            background: rgba(20, 22, 42, 0.92);
         }
         .toast.show {
             opacity: 1;
@@ -1290,18 +1371,18 @@
             height: 6px;
             border-radius: 50%;
             background: var(--cyan);
-            box-shadow: 0 0 8px var(--cyan);
+            box-shadow: 0 0 12px var(--cyan);
             flex-shrink: 0;
         }
 
-        /* ── Scroll-to-top ── */
+        /* ─── Scroll-to-top ─── */
         .scroll-top {
             position: fixed;
             bottom: 80px;
-            right: clamp(14px, 2vw, 24px);
+            right: clamp(16px, 2vw, 28px);
             z-index: 200;
-            width: clamp(40px, 3.5vw, 46px);
-            height: clamp(40px, 3.5vw, 46px);
+            width: clamp(42px, 3.5vw, 48px);
+            height: clamp(42px, 3.5vw, 48px);
             border-radius: 50%;
             background: var(--surface-2);
             border: 1.5px solid var(--border);
@@ -1310,12 +1391,13 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all .25s;
+            transition: all .25s ease;
             opacity: 0;
             pointer-events: none;
             transform: translateY(16px);
             box-shadow: var(--shadow);
             font-size: clamp(16px, 1.3vw, 20px);
+            backdrop-filter: blur(8px);
         }
         .scroll-top.visible {
             opacity: 1;
@@ -1325,7 +1407,8 @@
         .scroll-top:hover {
             border-color: var(--violet);
             color: var(--text);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
         }
         .scroll-top:active {
             transform: scale(0.92);
@@ -1335,30 +1418,30 @@
                RESPONSIVE BREAKPOINTS
             ────────────────────────────────────── */
 
-        /* Tablets & small laptops (768–1024px) */
         @media (max-width: 1024px) {
             .result-foot {
                 flex-direction: column;
                 align-items: stretch;
             }
             .result-right {
-                align-items: stretch;
+                align-items: center;
             }
             .orb-wrap {
-                justify-content: flex-end;
+                justify-content: center;
             }
             .cg-result {
                 flex-direction: column;
                 align-items: stretch;
-                text-align: left;
+                text-align: center;
             }
             .cg-right {
                 flex-direction: row;
-                justify-content: space-between;
+                justify-content: space-around;
                 align-items: center;
-                text-align: left;
+                text-align: center;
                 min-width: 0;
                 width: 100%;
+                flex-wrap: wrap;
             }
             .cg-right .cg-lbl {
                 margin-bottom: 0;
@@ -1368,11 +1451,10 @@
             }
         }
 
-        /* Mobile (< 768px) */
         @media (max-width: 768px) {
             .topbar {
-                padding: 0 14px;
                 height: 54px;
+                padding: 0 14px;
             }
             .brand {
                 font-size: 14px;
@@ -1396,7 +1478,7 @@
 
             .hero-eyebrow {
                 font-size: 10px;
-                padding: 4px 10px 4px 8px;
+                padding: 4px 12px 4px 10px;
             }
             .hero-eyebrow .sub {
                 display: none;
@@ -1428,7 +1510,10 @@
 
             .scenario-btn {
                 font-size: 10.5px;
-                padding: 5px 12px;
+                padding: 5px 13px;
+            }
+            .scenario-row {
+                justify-content: flex-start;
             }
 
             .result-foot {
@@ -1436,14 +1521,15 @@
                 gap: 14px;
             }
             .result-right {
-                align-items: stretch;
+                align-items: center;
             }
             .orb-wrap {
-                justify-content: space-between;
+                justify-content: center;
+                width: 100%;
             }
             .orb {
-                width: 70px;
-                height: 70px;
+                width: 72px;
+                height: 72px;
             }
             .orb-num {
                 font-size: 1.3rem;
@@ -1494,7 +1580,7 @@
             }
             .cg-right {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
                 gap: 4px;
                 width: 100%;
             }
@@ -1526,7 +1612,7 @@
             }
 
             .foot-note {
-                padding: 4px 14px 30px;
+                padding: 4px 0 30px;
                 font-size: 10.5px;
                 justify-content: center;
                 text-align: center;
@@ -1538,6 +1624,7 @@
                 padding: 12px 14px;
                 flex-wrap: wrap;
                 gap: 6px;
+                justify-content: center;
             }
             .quote-inner .q-text {
                 font-size: 12px;
@@ -1562,7 +1649,6 @@
                 font-size: 17px;
             }
             .sec-sub {
-                margin-left: 0;
                 font-size: 11.5px;
             }
             .sec-head {
@@ -1655,7 +1741,6 @@
             }
         }
 
-        /* Very small phones (< 400px) */
         @media (max-width: 400px) {
             .brand {
                 font-size: 12px;
@@ -1672,7 +1757,7 @@
                 font-size: 9px;
             }
             .hero h1 {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
             }
             .hero-desc {
                 font-size: 12px;
@@ -1687,8 +1772,8 @@
                 font-size: 1.8rem;
             }
             .orb {
-                width: 60px;
-                height: 60px;
+                width: 62px;
+                height: 62px;
             }
             .orb-num {
                 font-size: 1.1rem;
@@ -1714,37 +1799,36 @@
             }
         }
 
-        /* Large screens (> 1200px) */
         @media (min-width: 1200px) {
             .result-foot {
-                padding: 28px 32px;
+                padding: 30px 36px;
             }
             .cg-body {
-                padding: 26px 28px;
+                padding: 28px 32px;
             }
             .card-strip {
-                padding: 18px 28px;
+                padding: 20px 32px;
             }
             .scenario-section {
-                padding: 18px 28px 14px;
+                padding: 20px 32px 16px;
             }
             .subj-table thead th {
-                padding: 14px 28px;
+                padding: 14px 32px;
             }
             .subj-table td {
-                padding: 16px 28px;
+                padding: 16px 32px;
             }
             .legend {
-                padding: 16px 28px;
+                padding: 16px 32px;
             }
             .cg-result {
-                padding: 26px 28px;
+                padding: 28px 32px;
             }
             .about-inner {
-                padding: 24px 30px;
+                padding: 26px 34px;
             }
             .quote-inner {
-                padding: 20px 28px;
+                padding: 22px 34px;
             }
         }
     </style>
@@ -1754,180 +1838,187 @@
     <!-- ─── Backdrop ─── -->
     <div class="aurora"></div>
     <div class="noise"></div>
+    <div class="glow-ring"></div>
 
     <!-- ─── Nav ─── -->
     <nav class="topbar">
-        <div class="brand"><span class="brand-dot"></span>SGPA &amp; CGPA</div>
-        <div class="topbar-right"><strong>Computer Engineering</strong> <span class="sep">·</span> Semester 5</div>
+        <div class="topbar-inner">
+            <div class="brand"><span class="brand-dot"></span>SGPA &amp; CGPA</div>
+            <div class="topbar-right"><strong>Computer Engineering</strong> <span class="sep">·</span> Semester 5</div>
+        </div>
     </nav>
 
-    <!-- ─── Hero ─── -->
-    <header class="hero container">
-        <div class="hero-eyebrow">
-            <span>🏛️ Vishwakarma Institute of Technology (VIT), Pune</span>
-            <span class="dot">·</span>
-            <span class="sub">Computer Engineering · Semester 5</span>
-        </div>
-        <h1>SGPA &amp; CGPA <span class="grad-text">Calculator</span></h1>
-        <p class="hero-desc">
-            Calculate your SGPA and CGPA using the official grading system for VIT Computer Engineering Semester 5.
-            Select grades for each subject, and watch your results update live.
-        </p>
-        <div class="hero-config">
-            <div class="cfg-field">
-                <label>Semester label</label>
-                <input type="text" id="semLabelInput" value="Semester 5" oninput="updateLabels()" />
+    <div class="app-wrapper">
+
+        <!-- ─── Hero ─── -->
+        <header class="hero">
+            <div class="hero-eyebrow">
+                <span>🏛️ Vishwakarma Institute of Technology (VIT), Pune</span>
+                <span class="dot">·</span>
+                <span class="sub">Computer Engineering · Semester 5</span>
             </div>
-        </div>
-    </header>
-
-    <!-- ─── Quote Card (carousel) ─── -->
-    <div class="quote-card container">
-        <div class="quote-inner" id="quoteInner">
-            <span class="q-icon" id="qIcon">💡</span>
-            <span class="q-text" id="qText">Loading quote…</span>
-            <span class="q-emoji" id="qEmoji">✨</span>
-        </div>
-    </div>
-
-    <!-- ─── Page ─── -->
-    <div class="page container">
-
-        <!-- ═══ SECTION 1: SGPA ═══ -->
-        <div class="sec-head">
-            <span class="sec-badge">1</span>
-            <span class="sec-title">SGPA Calculator</span>
-        </div>
-        <div class="sec-sub">Select a grade for each subject below</div>
-
-        <div class="card">
-            <!-- Card strip -->
-            <div class="card-strip">
-                <div class="card-strip-l">
-                    Subjects
-                    <span class="credit-badge" id="creditBadge">21 CR</span>
-                </div>
-                <div class="card-strip-r">A+(10) · A(9) · B+(8) · B(7) · C+(6) · C(5) · D(4) · F(0)</div>
-            </div>
-
-            <!-- Quick Grade Scenarios -->
-            <div class="scenario-section">
-                <div class="scenario-label">⚡ Quick Grade Scenarios</div>
-                <div class="scenario-row" id="quickScenarios">
-                    <button class="scenario-btn accent" onclick="fillAll('A+')"><span class="emoji">🏆</span>All A+</button>
-                    <button class="scenario-btn accent" onclick="fillAll('A')"><span class="emoji">⭐</span>All A</button>
-                    <button class="scenario-btn" onclick="fillAll('B+')"><span class="emoji">📘</span>All B+</button>
-                    <button class="scenario-btn" onclick="fillAll('B')"><span class="emoji">📙</span>All B</button>
-                    <button class="scenario-btn" onclick="fillAll('C+')"><span class="emoji">📗</span>All C+</button>
-                    <button class="scenario-btn danger" onclick="clearAllGrades()"><span class="emoji">🗑</span>Reset</button>
+            <h1>SGPA &amp; CGPA <span class="grad-text">Calculator</span></h1>
+            <p class="hero-desc">
+                Calculate your SGPA and CGPA using the official grading system for VIT Computer Engineering Semester 5.
+                Select grades for each subject, and watch your results update live.
+            </p>
+            <div class="hero-config">
+                <div class="cfg-field">
+                    <label>Semester label</label>
+                    <input type="text" id="semLabelInput" value="Semester 5" oninput="updateLabels()" />
                 </div>
             </div>
+        </header>
 
-            <!-- Desktop table -->
-            <div class="table-scroll">
-                <table class="subj-table">
-                    <thead>
-                        <tr><th>#</th><th>Subject</th><th class="c">Credits</th><th class="c">Grade</th><th class="c">Cr × Pts</th></tr>
-                    </thead>
-                    <tbody id="deskBody"></tbody>
-                </table>
+        <!-- ─── Quote Card (carousel) ─── -->
+        <div class="quote-card">
+            <div class="quote-inner" id="quoteInner">
+                <span class="q-icon" id="qIcon">💡</span>
+                <span class="q-text" id="qText">Loading quote…</span>
+                <span class="q-emoji" id="qEmoji">✨</span>
             </div>
+        </div>
 
-            <!-- Mobile list -->
-            <div class="mob-list" id="mobList"></div>
+        <!-- ─── Page ─── -->
+        <div class="page">
 
-            <!-- Legend -->
-            <div class="legend" id="legend"></div>
+            <!-- ═══ SECTION 1: SGPA ═══ -->
+            <div class="sec-head">
+                <span class="sec-badge">1</span>
+                <span class="sec-title">SGPA Calculator</span>
+            </div>
+            <div class="sec-sub">Select a grade for each subject below</div>
 
-            <!-- Result -->
-            <div class="result-foot">
-                <div class="result-left">
-                    <div class="result-fml" id="fml">
-                        <span class="operator">📊</span> Select a grade for each subject to begin
+            <div class="card">
+                <!-- Card strip -->
+                <div class="card-strip">
+                    <div class="card-strip-l">
+                        Subjects
+                        <span class="credit-badge" id="creditBadge">21 CR</span>
                     </div>
-                    <div class="bar-wrap"><div class="bar-fill" id="barFill"></div></div>
-                    <div class="result-actions">
-                        <button class="copy-btn" onclick="copySGPA()">📋 Copy SGPA</button>
-                        <span class="save-msg" id="saveMsg">✅ Your progress is automatically saved.</span>
+                    <div class="card-strip-r">A+(10) · A(9) · B+(8) · B(7) · C+(6) · C(5) · D(4) · F(0)</div>
+                </div>
+
+                <!-- Quick Grade Scenarios -->
+                <div class="scenario-section">
+                    <div class="scenario-label">⚡ Quick Grade Scenarios</div>
+                    <div class="scenario-row" id="quickScenarios">
+                        <button class="scenario-btn accent" onclick="fillAll('A+')"><span class="emoji">🏆</span>All A+</button>
+                        <button class="scenario-btn accent" onclick="fillAll('A')"><span class="emoji">⭐</span>All A</button>
+                        <button class="scenario-btn" onclick="fillAll('B+')"><span class="emoji">📘</span>All B+</button>
+                        <button class="scenario-btn" onclick="fillAll('B')"><span class="emoji">📙</span>All B</button>
+                        <button class="scenario-btn" onclick="fillAll('C+')"><span class="emoji">📗</span>All C+</button>
+                        <button class="scenario-btn danger" onclick="clearAllGrades()"><span class="emoji">🗑</span>Reset</button>
                     </div>
                 </div>
-                <div class="result-right">
-                    <div class="orb-wrap">
-                        <div class="orb-meta">
-                            <div class="lbl">SGPA</div>
-                            <div class="tag" id="sgpaTag">Select grades</div>
+
+                <!-- Desktop table -->
+                <div class="table-scroll">
+                    <table class="subj-table">
+                        <thead>
+                            <tr><th>#</th><th>Subject</th><th class="c">Credits</th><th class="c">Grade</th><th class="c">Cr × Pts</th></tr>
+                        </thead>
+                        <tbody id="deskBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile list -->
+                <div class="mob-list" id="mobList"></div>
+
+                <!-- Legend -->
+                <div class="legend" id="legend"></div>
+
+                <!-- Result -->
+                <div class="result-foot">
+                    <div class="result-left">
+                        <div class="result-fml" id="fml">
+                            <span class="operator">📊</span> Select a grade for each subject to begin
                         </div>
-                        <div class="orb" id="orb">
-                            <div class="orb-num" id="sgpaNum">—</div>
-                            <div class="orb-cap">OUT OF 10</div>
+                        <div class="bar-wrap"><div class="bar-fill" id="barFill"></div></div>
+                        <div class="result-actions">
+                            <button class="copy-btn" onclick="copySGPA()">📋 Copy SGPA</button>
+                            <span class="save-msg" id="saveMsg">✅ Your progress is automatically saved.</span>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ SECTION 2: CGPA ═══ -->
-        <div class="sec-head">
-            <span class="sec-badge">2</span>
-            <span class="sec-title">CGPA Calculator</span>
-        </div>
-        <div class="sec-sub">Sum of semester SGPAs ÷ number of semesters</div>
-
-        <div class="card">
-            <div class="card-strip">
-                <div class="card-strip-l">All semesters</div>
-                <div class="card-strip-r" id="semCountLabel">5 semesters logged</div>
-            </div>
-            <div class="cg-body">
-                <div class="notice">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                    <div>Add rows freely — each keeps its own value. <strong>Deleting a row only removes that row</strong>, nothing else resets. Your current semester syncs live from Section 1.</div>
-                </div>
-
-                <div id="semLedger"></div>
-
-                <div class="btn-row">
-                    <button class="btn btn-add" onclick="addSem()">＋ Add semester</button>
-                    <button class="btn btn-reset" onclick="resetAll()">⟳ Reset All</button>
-                </div>
-
-                <div class="cg-result">
-                    <div class="cg-fml" id="cgpaFml">Log your semester SGPAs above to see your CGPA</div>
-                    <div class="cg-right">
-                        <div class="cg-lbl">CGPA</div>
-                        <div>
-                            <div class="cg-big empty" id="cgpaNum">—</div>
-                            <div id="cgpaPerfTag"></div>
-                        </div>
-                        <div style="margin-top:6px;">
-                            <button class="copy-btn" onclick="copyCGPA()">📋 Copy CGPA</button>
+                    <div class="result-right">
+                        <div class="orb-wrap">
+                            <div class="orb-meta">
+                                <div class="lbl">SGPA</div>
+                                <div class="tag" id="sgpaTag">Select grades</div>
+                            </div>
+                            <div class="orb" id="orb">
+                                <div class="orb-num" id="sgpaNum">—</div>
+                                <div class="orb-cap">OUT OF 10</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- ═══ SECTION 2: CGPA ═══ -->
+            <div class="sec-head">
+                <span class="sec-badge">2</span>
+                <span class="sec-title">CGPA Calculator</span>
+            </div>
+            <div class="sec-sub">Sum of semester SGPAs ÷ number of semesters</div>
+
+            <div class="card">
+                <div class="card-strip">
+                    <div class="card-strip-l">All semesters</div>
+                    <div class="card-strip-r" id="semCountLabel">5 semesters logged</div>
+                </div>
+                <div class="cg-body">
+                    <div class="notice">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        <div>Add rows freely — each keeps its own value. <strong>Deleting a row only removes that row</strong>, nothing else resets. Your current semester syncs live from Section 1.</div>
+                    </div>
+
+                    <div id="semLedger"></div>
+
+                    <div class="btn-row">
+                        <button class="btn btn-add" onclick="addSem()">＋ Add semester</button>
+                        <button class="btn btn-reset" onclick="resetAll()">⟳ Reset All</button>
+                    </div>
+
+                    <div class="cg-result">
+                        <div class="cg-fml" id="cgpaFml">Log your semester SGPAs above to see your CGPA</div>
+                        <div class="cg-right">
+                            <div class="cg-lbl">CGPA</div>
+                            <div>
+                                <div class="cg-big empty" id="cgpaNum">—</div>
+                                <div id="cgpaPerfTag"></div>
+                            </div>
+                            <div style="margin-top:6px;">
+                                <button class="copy-btn" onclick="copyCGPA()">📋 Copy CGPA</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-    </div>
-
-    <!-- ─── About Card ─── -->
-    <div class="about-card container">
-        <div class="about-inner">
-            <div class="about-icon">🎓</div>
-            <div class="about-text">
-                <h3>About</h3>
-                <p>
-                    This calculator is built for <strong>VIT Pune Computer Engineering</strong> Semester 5 students.
-                    It follows the official grading system and helps estimate SGPA and CGPA quickly.
-                    <span class="vit-tag">🏛️ VIT Pune</span>
-                </p>
+        <!-- ─── About Card ─── -->
+        <div class="about-card">
+            <div class="about-inner">
+                <div class="about-icon">🎓</div>
+                <div class="about-text">
+                    <h3>About</h3>
+                    <p>
+                        This calculator is built for <strong>VIT Pune Computer Engineering</strong> Semester 5 students.
+                        It follows the official grading system and helps estimate SGPA and CGPA quickly.
+                        <span class="vit-tag">🏛️ VIT Pune</span>
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- ─── Footer ─── -->
-    <div class="foot-note">
-        <span>Designed for <strong>VIT Computer Engineering</strong> students.</span>
-        <span>Made with <span class="love">❤️</span> by students, for students.</span>
+        <!-- ─── Footer ─── -->
+        <div class="foot-note">
+            <span>Designed for <strong>VIT Computer Engineering</strong> students.</span>
+            <span>Made with <span class="love">❤️</span> by students, for students.</span>
+        </div>
+
     </div>
 
     <!-- ─── Toast ─── -->
