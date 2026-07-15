@@ -2,896 +2,766 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>SGPA & CGPA Calculator</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ─── Reset & Base ─── */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+/* ═══ TOKENS ═══
+  bg: deep indigo-black gradient · accent: electric violet→cyan gradient
+  type: Space Grotesk (display) + Inter (body/UI)
+  motion: entrance stagger, animated aurora background, live glow on result
+*/
+*,*::before,*::after{ margin:0; padding:0; box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: #f0f4f8;
-  color: #1e293b;
-  min-height: 100vh;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* ─── Nav ─── */
-nav {
-  background: #fff;
-  border-bottom: 1px solid #e2e8f0;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-}
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 16px;
-  font-weight: 800;
-  color: #1d4ed8;
-  letter-spacing: -0.4px;
-}
-.nav-badge {
-  background: #1d4ed8;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 5px;
-  letter-spacing: 0.8px;
-}
-.nav-meta {
-  font-size: 12px;
-  color: #94a3b8;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.nav-dot { color: #cbd5e1; }
-
-/* ─── Hero Strip ─── */
-.hero {
-  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
-  padding: 28px 24px 24px;
-  color: #fff;
-}
-.hero-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.hero h1 {
-  font-size: clamp(1.4rem, 4vw, 2rem);
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  line-height: 1.2;
-}
-.hero p {
-  font-size: 13px;
-  opacity: 0.8;
-  margin-top: 4px;
-}
-.hero-stats {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.hstat {
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 10px;
-  padding: 10px 16px;
-  text-align: center;
-  min-width: 70px;
-}
-.hstat-num { font-size: 1.5rem; font-weight: 800; }
-.hstat-lbl { font-size: 10px; opacity: 0.75; text-transform: uppercase; letter-spacing: 1px; margin-top: 1px; }
-
-/* ─── Page Wrapper ─── */
-.page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 28px 16px 80px;
+:root{
+  --bg:#0A0B14;
+  --bg2:#0E1020;
+  --surface:#14162A;
+  --surface-2:#1B1E38;
+  --border:#2A2D4A;
+  --border-soft:#22243F;
+  --text:#F1F2F8;
+  --text-dim:#9195B5;
+  --text-faint:#5C6086;
+  --violet:#8B5CF6;
+  --cyan:#22D3EE;
+  --pink:#F472B6;
+  --grad: linear-gradient(120deg, var(--violet), var(--cyan));
+  --good:#34D399;
+  --good-bg:rgba(52,211,153,0.1);
+  --mid:#FBBF24;
+  --mid-bg:rgba(251,191,36,0.1);
+  --low:#F87171;
+  --low-bg:rgba(248,113,113,0.1);
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --glow-v: 0 0 40px rgba(139,92,246,0.35);
 }
 
-/* ─── Section Label ─── */
-.sec-lbl {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: #94a3b8;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.sec-lbl .num {
-  background: #1d4ed8;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.sec-lbl::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: #e2e8f0;
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
 }
 
-/* ─── Card ─── */
-.card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  margin-bottom: 24px;
-  overflow: hidden;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-}
-.card-head {
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 12px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.card-head-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #1e293b;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.card-head-title .tag {
-  background: #dbeafe;
-  color: #1d4ed8;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 5px;
-}
-.card-head-right {
-  font-size: 11px;
-  color: #94a3b8;
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.5;
+  overflow-x:hidden;
+  position:relative;
 }
 
-/* ─── DESKTOP TABLE ─── */
-.desktop-table { width: 100%; border-collapse: collapse; }
-.desktop-table thead th {
-  background: #f8fafc;
-  padding: 10px 14px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #64748b;
-  text-align: left;
-  border-bottom: 1px solid #e2e8f0;
+/* ── Animated aurora backdrop ── */
+.aurora{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 800px 500px at 15% -10%, rgba(139,92,246,0.28), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 90% 10%, rgba(34,211,238,0.18), transparent 60%),
+    radial-gradient(ellipse 600px 500px at 50% 100%, rgba(244,114,182,0.12), transparent 60%);
+  animation: auroraShift 18s ease-in-out infinite alternate;
 }
-.desktop-table thead th.center { text-align: center; }
-.desktop-table tbody tr {
-  border-bottom: 1px solid #f1f5f9;
-  transition: background 0.1s;
+@keyframes auroraShift{
+  0%{ opacity:0.85; transform:translateY(0) scale(1); }
+  50%{ opacity:1; transform:translateY(-16px) scale(1.03); }
+  100%{ opacity:0.85; transform:translateY(0) scale(1); }
 }
-.desktop-table tbody tr:last-child { border-bottom: none; }
-.desktop-table tbody tr:hover { background: #f8faff; }
-.desktop-table td {
-  padding: 11px 14px;
-  vertical-align: middle;
-}
-.desktop-table td.center { text-align: center; }
-
-/* ─── MOBILE CARDS ─── */
-.mobile-cards { display: none; }
-.sub-card {
-  border-bottom: 1px solid #f1f5f9;
-  padding: 14px 16px;
-}
-.sub-card:last-child { border-bottom: none; }
-.sub-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  gap: 8px;
-}
-.sub-card-info { flex: 1; min-width: 0; }
-.sub-card-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #1e293b;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.sub-card-code {
-  font-size: 11px;
-  color: #94a3b8;
-  margin-top: 1px;
-}
-.sub-card-bottom {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.noise{
+  position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ─── Shared subject styles ─── */
-.sub-name-d { font-size: 13px; font-weight: 600; color: #1e293b; }
-.sub-code-d { font-size: 11px; color: #94a3b8; margin-top: 1px; }
-.cr-pill {
-  display: inline-flex;
-  align-items: center;
-  background: #eff6ff;
-  color: #1d4ed8;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 20px;
-  white-space: nowrap;
-  flex-shrink: 0;
+::selection{ background:rgba(139,92,246,0.35); color:#fff; }
+
+/* ── Nav ── */
+.topbar{
+  position:sticky; top:0; z-index:300;
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  background:rgba(10,11,20,0.72);
+  border-bottom:1px solid var(--border-soft);
+  height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 22px;
+}
+.brand{
+  display:flex; align-items:center; gap:9px;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700; font-size:17px; letter-spacing:-0.2px;
+}
+.brand-dot{
+  width:9px; height:9px; border-radius:50%;
+  background:var(--grad);
+  box-shadow:0 0 12px rgba(139,92,246,0.8);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{ transform:scale(1); opacity:1; } 50%{ transform:scale(1.35); opacity:0.6; } }
+.topbar-right{ font-size:11.5px; color:var(--text-faint); font-weight:600; letter-spacing:0.3px; }
+
+/* ── Hero ── */
+.hero{
+  position:relative; z-index:1;
+  max-width:1000px; margin:0 auto;
+  padding:56px 24px 34px;
+  opacity:0; transform:translateY(18px);
+  animation: riseIn 0.7s cubic-bezier(.22,.9,.28,1) forwards;
+}
+@keyframes riseIn{ to{ opacity:1; transform:translateY(0); } }
+
+.hero-eyebrow{
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:11.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--cyan);
+  background:rgba(34,211,238,0.08);
+  border:1px solid rgba(34,211,238,0.25);
+  padding:5px 12px 5px 10px;
+  border-radius:20px;
+  margin-bottom:18px;
+}
+.hero h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:clamp(2.1rem, 5.5vw, 3.4rem);
+  line-height:1.05;
+  letter-spacing:-1px;
+}
+.hero h1 .grad-text{
+  background:var(--grad);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero p{
+  font-size:14.5px; color:var(--text-dim);
+  margin-top:16px; max-width:560px; line-height:1.7;
+}
+.hero-config{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
+.cfg-field{ display:flex; flex-direction:column; gap:6px; }
+.cfg-field label{
+  font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--text-faint);
+}
+.cfg-field input{
+  font-family:'Inter',sans-serif; font-size:13.5px; font-weight:600; color:var(--text);
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:10px; padding:9px 14px; min-width:170px;
+  transition:border-color .2s, box-shadow .2s;
+}
+.cfg-field input:focus{ outline:none; border-color:var(--violet); box-shadow:0 0 0 4px rgba(139,92,246,0.15); }
+
+/* ── Page ── */
+.page{ position:relative; z-index:1; max-width:1000px; margin:0 auto; padding:10px 22px 100px; }
+
+.sec-head{ display:flex; align-items:center; gap:12px; margin:44px 0 6px; }
+.sec-head:first-child{ margin-top:8px; }
+.sec-badge{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700; font-size:12px;
+  width:28px; height:28px; border-radius:9px;
+  background:var(--grad);
+  display:flex; align-items:center; justify-content:center;
+  color:#08090F;
+  flex-shrink:0;
+}
+.sec-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:21px; letter-spacing:-0.3px; }
+.sec-sub{ font-size:13px; color:var(--text-faint); margin:2px 0 18px 40px; }
+
+/* ── Card (glass) ── */
+.card{
+  background:linear-gradient(180deg, var(--surface) 0%, var(--bg2) 100%);
+  border:1px solid var(--border);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+  opacity:0; transform:translateY(24px);
+  animation: riseIn 0.7s cubic-bezier(.22,.9,.28,1) forwards;
+  animation-delay:0.12s;
+}
+.card-strip{
+  padding:15px 22px;
+  border-bottom:1px solid var(--border-soft);
+  display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+}
+.card-strip-l{ font-size:13px; font-weight:700; display:flex; align-items:center; gap:9px; }
+.credit-badge{
+  font-size:11px; font-weight:700;
+  background:rgba(139,92,246,0.14); color:#C4B5FD;
+  border:1px solid rgba(139,92,246,0.3);
+  padding:3px 10px; border-radius:20px;
+}
+.card-strip-r{ font-size:10.5px; color:var(--text-faint); font-weight:500; }
+
+/* ── Desktop table ── */
+.table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.subj-table{ width:100%; border-collapse:collapse; min-width:660px; }
+.subj-table thead th{
+  padding:11px 22px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px;
+  color:var(--text-faint); text-align:left; border-bottom:1px solid var(--border-soft);
+  white-space:nowrap;
+}
+.subj-table thead th.c{ text-align:center; }
+.subj-table tbody tr{ border-bottom:1px solid var(--border-soft); transition:background .15s; }
+.subj-table tbody tr:last-child{ border-bottom:none; }
+.subj-table tbody tr:hover{ background:rgba(139,92,246,0.045); }
+.subj-table td{ padding:14px 22px; vertical-align:middle; }
+.subj-table td.c{ text-align:center; }
+
+.row-idx{ font-size:11.5px; color:var(--text-faint); font-weight:700; }
+.subj-name{ font-size:13.5px; font-weight:600; color:var(--text); }
+.subj-meta{ font-size:10.5px; color:var(--text-faint); margin-top:3px; display:flex; gap:6px; align-items:center; }
+.subj-tag{
+  background:var(--surface-2); border:1px solid var(--border);
+  border-radius:5px; padding:1px 6px; font-size:9.5px; color:var(--text-dim); font-weight:600;
+}
+.cr-pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  background:rgba(34,211,238,0.1); color:#67E8F9;
+  border:1px solid rgba(34,211,238,0.25);
+  font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; min-width:42px;
 }
 
-/* ─── Grade Select ─── */
-.gsel {
-  appearance: none;
-  -webkit-appearance: none;
-  background: #f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2364748b'/%3E%3C/svg%3E") no-repeat right 10px center;
-  border: 1.5px solid #e2e8f0;
-  color: #374151;
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 7px 28px 7px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  width: 100%;
-  max-width: 155px;
-  min-width: 120px;
+/* ── Grade select ── */
+.gsel{
+  appearance:none; -webkit-appearance:none;
+  background:var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239195B5'/%3E%3C/svg%3E") no-repeat right 13px center;
+  border:1.5px solid var(--border);
+  color:var(--text); font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+  padding:9px 32px 9px 13px; border-radius:10px; cursor:pointer;
+  transition:border-color .15s, background-color .15s, transform .1s;
+  width:100%; max-width:172px; min-width:132px;
 }
-.gsel:focus { outline: none; border-color: #2563eb; background-color: #eff6ff; }
-.gsel.ga { border-color: #f59e0b; color: #92400e; background-color: #fffbeb; }
-.gsel.gb { border-color: #3b82f6; color: #1e40af; background-color: #eff6ff; }
-.gsel.gc { border-color: #10b981; color: #065f46; background-color: #ecfdf5; }
-.gsel.gd { border-color: #f97316; color: #9a3412; background-color: #fff7ed; }
-.gsel.gf { border-color: #ef4444; color: #991b1b; background-color: #fef2f2; }
+.gsel:hover{ border-color:#3D4166; }
+.gsel:active{ transform:scale(0.98); }
+.gsel:focus{ outline:none; border-color:var(--violet); box-shadow:0 0 0 4px rgba(139,92,246,0.15); }
+.gsel.g-hi{ border-color:rgba(52,211,153,0.5); color:#6EE7B7; background-color:var(--good-bg); }
+.gsel.g-mid{ border-color:rgba(251,191,36,0.5); color:#FCD34D; background-color:var(--mid-bg); }
+.gsel.g-low{ border-color:rgba(248,113,113,0.5); color:#FCA5A5; background-color:var(--low-bg); }
 
-/* ─── Grade Points cell ─── */
-.gp {
-  font-size: 12px;
-  font-weight: 600;
-  color: #cbd5e1;
-  transition: color 0.2s;
-  white-space: nowrap;
-}
-.gp.on { color: #1d4ed8; }
+.gp-cell{ font-size:12.5px; font-weight:700; color:#3A3D5C; transition:color .3s; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.gp-cell.on{ color:var(--cyan); }
 
-/* ─── Grade Legend ─── */
-.grade-legend {
-  padding: 12px 16px;
-  border-top: 1px solid #f1f5f9;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+/* ── Mobile subject cards ── */
+.mob-list{ display:none; }
+.mob-row{ padding:16px 20px; border-bottom:1px solid var(--border-soft); display:flex; flex-direction:column; gap:12px; }
+.mob-row:last-child{ border-bottom:none; }
+.mob-row-top{ display:flex; align-items:center; gap:11px; }
+.mob-idx{
+  width:26px; height:26px; flex-shrink:0; border-radius:8px;
+  background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+  font-size:10.5px; font-weight:700; color:var(--text-faint);
 }
-.gchip {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 3px 9px;
-  font-size: 11px;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-}
-.gchip b { color: #1e293b; font-weight: 600; }
-.gchip .rng { color: #94a3b8; font-size: 10px; }
+.mob-info{ flex:1; min-width:0; }
+.mob-name{ font-size:13.5px; font-weight:600; }
+.mob-meta{ font-size:10.5px; color:var(--text-faint); margin-top:3px; display:flex; gap:6px; align-items:center; }
+.mob-row-bottom{ display:flex; align-items:center; gap:10px; }
 
-/* ─── SGPA Result Footer ─── */
-.sgpa-foot {
-  padding: 18px 18px;
-  background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
-  border-top: 1px solid #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
+/* ── Legend ── */
+.legend{ padding:14px 22px; border-top:1px solid var(--border-soft); display:flex; flex-wrap:wrap; gap:8px; background:rgba(255,255,255,0.015); }
+.lg-chip{
+  background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+  padding:4px 11px; font-size:10.5px; color:var(--text-dim);
+  display:flex; align-items:center; gap:5px; white-space:nowrap;
 }
-.sgpa-left { flex: 1; min-width: 180px; }
-.fml {
-  font-size: 12px;
-  color: #64748b;
-  line-height: 1.9;
-}
-.fml b { color: #1e293b; }
-.bar-wrap {
-  width: 100%;
-  max-width: 340px;
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 10px;
-}
-.bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #60a5fa, #1d4ed8);
-  border-radius: 3px;
-  transition: width 0.5s ease;
-  width: 0%;
-}
-.sgpa-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-shrink: 0;
-}
-.sgpa-meta .lbl {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: #94a3b8;
-}
-.sgpa-meta .tag {
-  font-size: 12px;
-  color: #64748b;
-  font-weight: 500;
-  margin-top: 2px;
-}
-.sgpa-big {
-  font-size: clamp(2.2rem, 6vw, 3rem);
-  font-weight: 800;
-  color: #1d4ed8;
-  line-height: 1;
-  min-width: 80px;
-  text-align: right;
-  transition: all 0.3s;
-  letter-spacing: -1px;
-}
-.sgpa-big.empty { color: #cbd5e1; }
+.lg-chip b{ color:var(--text); font-weight:700; }
+.lg-chip .rng{ color:var(--text-faint); }
 
-/* ─── CGPA Section ─── */
-.cgpa-body { padding: 20px 18px; }
-.info-pill {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 12px;
-  color: #1e40af;
-  margin-bottom: 20px;
-  line-height: 1.6;
+/* ── Result footer — glowing orb reveal ── */
+.result-foot{
+  padding:26px 24px;
+  background:radial-gradient(ellipse 500px 260px at 85% 30%, rgba(139,92,246,0.1), transparent 70%);
+  border-top:1px solid var(--border-soft);
+  display:flex; align-items:center; justify-content:space-between; gap:22px; flex-wrap:wrap;
 }
-.info-pill strong { font-weight: 600; }
-.sem-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 16px;
-  align-items: flex-end;
+.result-left{ flex:1; min-width:210px; }
+.result-fml{ font-size:12.5px; color:var(--text-dim); line-height:1.9; }
+.result-fml b{ color:var(--text); font-weight:700; }
+.result-fml code{
+  font-family:'Space Grotesk',sans-serif; background:var(--surface-2); border:1px solid var(--border);
+  padding:1px 7px; border-radius:5px; font-size:11.5px; color:#C4B5FD;
 }
-.sem-grp {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  flex: 1;
-  min-width: 90px;
-  max-width: 130px;
-}
-.sem-grp label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #94a3b8;
-}
-.sem-grp label.curr { color: #1d4ed8; }
-.sem-input {
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  color: #1e293b;
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 9px 12px;
-  border-radius: 8px;
-  width: 100%;
-  transition: all 0.15s;
-  -webkit-appearance: none;
-}
-.sem-input:focus {
-  outline: none;
-  border-color: #2563eb;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
-}
-.sem-input::placeholder { color: #cbd5e1; font-weight: 400; font-size: 12px; }
-.sem-input.curr-inp { border-color: #bfdbfe; background: #eff6ff; }
-.sem-input.curr-inp:focus { border-color: #2563eb; }
-.btn-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
-.btn {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1.5px solid;
-  cursor: pointer;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.btn-add { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
-.btn-add:hover, .btn-add:active { background: #dbeafe; }
-.btn-rm  { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
-.btn-rm:hover, .btn-rm:active { background: #fee2e2; }
-.cgpa-result {
-  background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
-  border: 1px solid #e0e7ff;
-  border-radius: 12px;
-  padding: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-.cgpa-fml { font-size: 12px; color: #64748b; line-height: 2; flex: 1; min-width: 140px; }
-.cgpa-fml b { color: #1e293b; }
-.cgpa-right { text-align: center; flex-shrink: 0; }
-.cgpa-lbl {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: #94a3b8;
-  margin-bottom: 4px;
-}
-.cgpa-big {
-  font-size: clamp(2.8rem, 8vw, 3.8rem);
-  font-weight: 800;
-  color: #1d4ed8;
-  line-height: 1;
-  letter-spacing: -1px;
-  transition: all 0.3s;
-}
-.cgpa-big.empty { color: #cbd5e1; }
-.perf-tag {
-  display: inline-block;
-  margin-top: 7px;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 12px;
-  border-radius: 20px;
-}
+.bar-wrap{ width:100%; max-width:370px; height:6px; background:var(--surface-2); border-radius:4px; overflow:hidden; margin-top:14px; }
+.bar-fill{ height:100%; background:var(--grad); border-radius:4px; width:0%; transition:width .7s cubic-bezier(.22,.9,.3,1); box-shadow:0 0 12px rgba(139,92,246,0.6); }
 
-/* ─── Mobile Number Row (in subject cards) ─── */
-.row-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  background: #f1f5f9;
-  border-radius: 50%;
-  font-size: 10px;
-  font-weight: 700;
-  color: #94a3b8;
-  flex-shrink: 0;
+.orb-wrap{ display:flex; align-items:center; gap:18px; flex-shrink:0; }
+.orb-meta .lbl{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.8px; color:var(--text-faint); }
+.orb-meta .tag{ font-size:12px; color:var(--text-dim); font-weight:500; margin-top:3px; }
+.orb{
+  width:96px; height:96px; border-radius:50%; position:relative; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  background:var(--surface-2); border:1.5px solid var(--border);
+  transform:scale(0.88); opacity:0.5;
+  transition: all .55s cubic-bezier(.34,1.56,.64,1);
 }
-
-/* ─── Responsive ─── */
-@media (max-width: 640px) {
-  nav { padding: 0 14px; height: 52px; }
-  .nav-brand { font-size: 14px; gap: 7px; }
-  .nav-meta .nav-dot + span { display: none; } /* hide "10 Subjects" on very small */
-  
-  .hero { padding: 20px 14px 18px; }
-  .hero h1 { font-size: 1.3rem; }
-  .hstat { padding: 8px 12px; }
-  .hstat-num { font-size: 1.3rem; }
-
-  .page { padding: 18px 10px 60px; }
-  
-  /* Switch table → cards on mobile */
-  .desktop-table-wrap { display: none; }
-  .mobile-cards { display: block; }
-  
-  .card-head { padding: 11px 14px; }
-  .card-head-title { font-size: 12px; }
-  
-  /* Mobile subject card */
-  .sub-card { padding: 12px 14px; }
-  .sub-card-name { font-size: 13px; }
-  .gsel { max-width: 100%; min-width: unset; font-size: 14px; padding: 9px 28px 9px 10px; }
-  
-  /* SGPA footer stacks vertically */
-  .sgpa-foot { flex-direction: column; align-items: stretch; padding: 16px 14px; gap: 14px; }
-  .sgpa-right { justify-content: space-between; width: 100%; }
-  .sgpa-big { font-size: 2.5rem; }
-  .bar-wrap { max-width: 100%; }
-
-  /* CGPA */
-  .cgpa-body { padding: 16px 14px; }
-  .sem-grp { min-width: 80px; max-width: none; flex: 1 1 calc(50% - 6px); }
-  .cgpa-result { flex-direction: column; align-items: stretch; }
-  .cgpa-right { display: flex; align-items: center; justify-content: space-between; }
-  .cgpa-big { font-size: 3rem; }
-  
-  .grade-legend { padding: 10px 14px; }
+.orb.filled{
+  transform:scale(1); opacity:1;
+  background:radial-gradient(circle at 30% 25%, rgba(139,92,246,0.22), var(--surface-2) 70%);
+  border-color:transparent;
+  box-shadow: var(--glow-v), inset 0 0 0 1.5px rgba(139,92,246,0.4);
+  animation: orbPop .55s cubic-bezier(.34,1.56,.64,1);
 }
+@keyframes orbPop{ 0%{ transform:scale(0.7) rotate(-8deg);} 60%{ transform:scale(1.08) rotate(2deg);} 100%{ transform:scale(1) rotate(0);} }
+.orb-num{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.85rem; line-height:1; letter-spacing:-0.5px; }
+.orb-cap{ font-size:8px; font-weight:700; letter-spacing:1.6px; color:var(--text-faint); margin-top:3px; }
+.orb.filled .orb-cap{ color:var(--cyan); }
 
-@media (min-width: 641px) and (max-width: 860px) {
-  .page { padding: 22px 16px 60px; }
-  .gsel { max-width: 140px; min-width: 110px; }
-  .sem-grp { min-width: 90px; }
+/* ── CGPA section ── */
+.cg-body{ padding:24px 22px; }
+.notice{
+  background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.22); border-radius:12px;
+  padding:13px 16px; font-size:12.5px; color:#C4B5FD; margin-bottom:22px; line-height:1.65;
+  display:flex; gap:10px; align-items:flex-start;
 }
+.notice svg{ flex-shrink:0; margin-top:1px; color:var(--violet); }
+.notice strong{ font-weight:700; color:var(--text); }
 
-/* ─── Scroll hint for tables on mid-size ─── */
-.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.sem-row{
+  display:flex; align-items:center; gap:14px; padding:12px 15px;
+  border:1.5px solid var(--border); border-radius:12px; margin-bottom:9px;
+  background:var(--surface-2); transition:border-color .2s, background .2s, transform .15s;
+  opacity:0; transform:translateX(-10px);
+  animation: slideIn .4s cubic-bezier(.22,.9,.3,1) forwards;
+}
+@keyframes slideIn{ to{ opacity:1; transform:translateX(0); } }
+.sem-row.is-current{ border-color:rgba(139,92,246,0.5); background:rgba(139,92,246,0.08); }
+.sem-row-idx{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:var(--text-faint); width:24px; flex-shrink:0; }
+.sem-row.is-current .sem-row-idx{ color:#C4B5FD; }
+.sem-row-label{ flex:1; min-width:0; }
+.sem-row-label .t1{ font-size:12.5px; font-weight:700; color:var(--text); }
+.sem-row-label .t2{ font-size:10px; color:var(--text-faint); margin-top:1px; }
+.sem-input{
+  background:var(--bg2); border:1.5px solid var(--border); color:var(--text);
+  font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700;
+  padding:9px 10px; border-radius:9px; width:88px; text-align:center;
+  transition:all .15s; -webkit-appearance:none; flex-shrink:0;
+}
+.sem-input:focus{ outline:none; border-color:var(--violet); box-shadow:0 0 0 4px rgba(139,92,246,0.15); }
+.sem-input::placeholder{ color:var(--text-faint); font-weight:500; font-size:12px; }
+.sem-row-del{
+  width:32px; height:32px; flex-shrink:0; border-radius:8px; border:1.5px solid var(--border);
+  background:var(--bg2); color:var(--text-faint);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s;
+}
+.sem-row-del:hover{ border-color:#F87171; color:#F87171; background:rgba(248,113,113,0.1); transform:scale(1.06); }
+
+.btn-row{ display:flex; gap:9px; margin:16px 0 22px; flex-wrap:wrap; }
+.btn{
+  font-family:'Inter',sans-serif; font-size:13px; font-weight:700; padding:11px 18px; border-radius:11px;
+  border:none; cursor:pointer; transition:all .18s; -webkit-tap-highlight-color:transparent;
+  display:inline-flex; align-items:center; gap:7px;
+}
+.btn-add{ background:var(--grad); color:#08090F; box-shadow:0 4px 20px -6px rgba(139,92,246,0.6); }
+.btn-add:hover{ transform:translateY(-2px); box-shadow:0 8px 26px -6px rgba(139,92,246,0.75); }
+.btn-add:active{ transform:translateY(0) scale(0.97); }
+
+.cg-result{
+  background:radial-gradient(ellipse 500px 300px at 85% 30%, rgba(34,211,238,0.1), transparent 70%);
+  border:1px solid var(--border); border-radius:16px; padding:24px;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:18px;
+}
+.cg-fml{ font-size:12.5px; color:var(--text-dim); line-height:2; flex:1; min-width:170px; }
+.cg-fml b{ color:var(--text); }
+.cg-right{ text-align:center; flex-shrink:0; }
+.cg-lbl{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.8px; color:var(--text-faint); margin-bottom:8px; }
+.cg-big{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(2.7rem, 7vw, 3.8rem); line-height:1; letter-spacing:-1.5px;
+  background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  transition:all .3s;
+}
+.cg-big.empty{ background:none; -webkit-text-fill-color:initial; color:var(--text-faint); }
+.perf-tag{ display:inline-block; margin-top:10px; font-size:10.5px; font-weight:700; letter-spacing:0.4px; padding:5px 14px; border-radius:20px; }
+
+/* ── Footer ── */
+.foot-note{
+  position:relative; z-index:1; max-width:1000px; margin:0 auto; padding:8px 24px 50px;
+  font-size:11.5px; color:var(--text-faint); display:flex; align-items:center; gap:8px;
+}
+.foot-note .dot{ width:6px; height:6px; border-radius:50%; background:var(--good); box-shadow:0 0 8px rgba(52,211,153,0.7); animation:pulse 2.4s ease-in-out infinite; }
+
+/* ── Toast ── */
+.toast{
+  position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(24px);
+  background:var(--surface-2); color:var(--text); border:1px solid var(--border);
+  font-size:12.5px; font-weight:600; padding:12px 22px; border-radius:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.5);
+  opacity:0; pointer-events:none; transition:all .35s cubic-bezier(.22,.9,.3,1); z-index:400;
+  display:flex; align-items:center; gap:9px;
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+.toast .dot{ width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
+
+/* ── Responsive ── */
+@media (max-width:640px){
+  .topbar{ padding:0 16px; height:54px; }
+  .brand{ font-size:15px; }
+  .topbar-right{ font-size:10px; }
+  .hero{ padding:38px 18px 26px; }
+  .hero-config{ gap:8px; }
+  .cfg-field input{ min-width:0; width:100%; }
+  .page{ padding:6px 14px 80px; }
+  .sec-title{ font-size:18px; }
+  .sec-sub{ margin-left:0; }
+
+  .table-scroll{ display:none; }
+  .mob-list{ display:block; }
+  .gsel{ max-width:100%; min-width:0; }
+
+  .result-foot{ flex-direction:column; align-items:stretch; padding:22px 18px; }
+  .orb-wrap{ justify-content:space-between; width:100%; }
+  .bar-wrap{ max-width:100%; }
+
+  .cg-body{ padding:20px 16px; }
+  .sem-row{ flex-wrap:nowrap; padding:11px 12px; }
+  .sem-input{ width:74px; }
+  .cg-result{ flex-direction:column; align-items:stretch; text-align:left; }
+  .cg-right{ display:flex; align-items:center; justify-content:space-between; text-align:left; }
+}
+@media (min-width:641px) and (max-width:880px){ .page{ padding:6px 18px 80px; } }
 </style>
 </head>
 <body>
 
-<!-- ── Nav ── -->
-<nav>
-  <div class="nav-brand">
-    📊 GPA Calc
-    <span class="nav-badge">SEM 4</span>
-  </div>
-  <div class="nav-meta">
-    CS Dept
-    <span class="nav-dot">·</span>
-    <span>21 Credits</span>
-    <span class="nav-dot">·</span>
-    <span>10 Subjects</span>
-  </div>
+<div class="aurora"></div>
+<div class="noise"></div>
+
+<nav class="topbar">
+  <div class="brand"><span class="brand-dot"></span>SGPA & CGPA Calculator</div>
+  <div class="topbar-right" id="topMeta">Semester 5 · 21 Credits</div>
 </nav>
 
-<!-- ── Hero ── -->
-<div class="hero">
-  <div class="hero-inner">
-    <div>
-      <h1>SGPA & CGPA<br>Calculator</h1>
-      <p>Semester 4 · Computer Science Engineering</p>
-    </div>
-    <div class="hero-stats">
-      <div class="hstat">
-        <div class="hstat-num">10</div>
-        <div class="hstat-lbl">Subjects</div>
-      </div>
-      <div class="hstat">
-        <div class="hstat-num">21</div>
-        <div class="hstat-lbl">Credits</div>
-      </div>
-      <div class="hstat">
-        <div class="hstat-num">10.0</div>
-        <div class="hstat-lbl">Max SGPA</div>
-      </div>
+<header class="hero">
+  <div class="hero-eyebrow">⚡ Live calculation</div>
+  <h1>SGPA & CGPA<br><span class="grad-text">Calculator</span></h1>
+  <p>Pick a grade for each subject to get your live SGPA, then log past semesters to track your CGPA — every value stays saved as you add or remove rows.</p>
+  <div class="hero-config">
+    <div class="cfg-field">
+      <label>Semester label</label>
+      <input type="text" id="semLabelInput" value="Semester 5" oninput="updateLabels()">
     </div>
   </div>
-</div>
+</header>
 
-<!-- ── Page ── -->
 <div class="page">
 
-  <!-- SGPA -->
-  <div class="sec-lbl"><span class="num">1</span> SGPA Calculator — Semester 4</div>
+  <div class="sec-head">
+    <span class="sec-badge">1</span>
+    <span class="sec-title">SGPA Calculator</span>
+  </div>
+  <div class="sec-sub">Select a grade for each subject below</div>
 
   <div class="card">
-    <div class="card-head">
-      <div class="card-head-title">
-        Subjects &amp; Grades
-        <span class="tag">21 Credits</span>
-      </div>
-      <div class="card-head-right">A+(10) A(9) B+(8) B(7) C+(6) C(5) D(4) F(0)</div>
+    <div class="card-strip">
+      <div class="card-strip-l">Subjects <span class="credit-badge" id="creditBadge">21 CR</span></div>
+      <div class="card-strip-r">A+(10) · A(9) · B+(8) · B(7) · C+(6) · C(5) · D(4) · F(0)</div>
     </div>
 
-    <!-- Desktop table -->
-    <div class="desktop-table-wrap table-scroll">
-      <table class="desktop-table">
+    <div class="table-scroll">
+      <table class="subj-table">
         <thead>
-          <tr>
-            <th>#</th>
-            <th>Subject</th>
-            <th class="center">Credits</th>
-            <th class="center">Grade</th>
-            <th class="center">Cr × Pts</th>
-          </tr>
+          <tr><th>#</th><th>Subject</th><th class="c">Credits</th><th class="c">Grade</th><th class="c">Cr × Pts</th></tr>
         </thead>
         <tbody id="deskBody"></tbody>
       </table>
     </div>
 
-    <!-- Mobile cards -->
-    <div class="mobile-cards" id="mobileCards"></div>
+    <div class="mob-list" id="mobList"></div>
+    <div class="legend" id="legend"></div>
 
-    <!-- Legend -->
-    <div class="grade-legend" id="legend"></div>
-
-    <!-- SGPA Result -->
-    <div class="sgpa-foot">
-      <div class="sgpa-left">
-        <div class="fml" id="fml">Select a grade for each subject to calculate your SGPA</div>
+    <div class="result-foot">
+      <div class="result-left">
+        <div class="result-fml" id="fml">Select a grade for each subject to begin</div>
         <div class="bar-wrap"><div class="bar-fill" id="barFill"></div></div>
       </div>
-      <div class="sgpa-right">
-        <div class="sgpa-meta">
-          <div class="lbl">SGPA</div>
-          <div class="tag" id="sgpaTag">—</div>
+      <div class="orb-wrap">
+        <div class="orb-meta"><div class="lbl">SGPA</div><div class="tag" id="sgpaTag">Not yet calculated</div></div>
+        <div class="orb" id="orb">
+          <div class="orb-num" id="sgpaNum">—</div>
+          <div class="orb-cap">LIVE</div>
         </div>
-        <div class="sgpa-big empty" id="sgpaNum">—</div>
       </div>
     </div>
   </div>
 
-  <!-- CGPA -->
-  <div class="sec-lbl"><span class="num">2</span> CGPA Calculator — All Semesters</div>
+  <div class="sec-head">
+    <span class="sec-badge">2</span>
+    <span class="sec-title">CGPA Calculator</span>
+  </div>
+  <div class="sec-sub">Sum of semester SGPAs ÷ number of semesters</div>
 
   <div class="card">
-    <div class="card-head">
-      <div class="card-head-title">
-        Cumulative GPA
-        <span class="tag">All Sems</span>
-      </div>
-      <div class="card-head-right">Sum of SGPAs ÷ No. of Semesters</div>
+    <div class="card-strip">
+      <div class="card-strip-l">All semesters</div>
+      <div class="card-strip-r" id="semCountLabel">5 semesters logged</div>
     </div>
-    <div class="cgpa-body">
-      <div class="info-pill">
-        All fields are freely editable. Enter your past SGPAs for Sems 1–3.
-        <strong>Sem 4 (current)</strong> is highlighted — type any value to simulate your CGPA.
+    <div class="cg-body">
+      <div class="notice">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <div>Add rows freely — each keeps its own value. <strong>Deleting a row only removes that row</strong>, nothing else resets. Your current semester syncs live from Section 1.</div>
       </div>
 
-      <div class="sem-grid" id="semGrid"></div>
+      <div id="semLedger"></div>
 
       <div class="btn-row">
-        <button class="btn btn-add" onclick="addSem()">＋ Add Semester</button>
-        <button class="btn btn-rm"  onclick="rmSem()">－ Remove Last</button>
+        <button class="btn btn-add" onclick="addSem()">+ Add semester</button>
       </div>
 
-      <div class="cgpa-result">
-        <div class="cgpa-fml" id="cgpaFml">Enter semester SGPAs above to see your CGPA</div>
-        <div class="cgpa-right">
-          <div class="cgpa-lbl">CGPA</div>
-          <div>
-            <div class="cgpa-big empty" id="cgpaNum">—</div>
-            <div id="cgpaPerfTag"></div>
-          </div>
+      <div class="cg-result">
+        <div class="cg-fml" id="cgpaFml">Log your semester SGPAs above to see your CGPA</div>
+        <div class="cg-right">
+          <div class="cg-lbl">CGPA</div>
+          <div><div class="cg-big empty" id="cgpaNum">—</div><div id="cgpaPerfTag"></div></div>
         </div>
       </div>
     </div>
   </div>
 
-</div><!-- /page -->
+</div>
+
+<div class="foot-note"><span class="dot"></span> All calculations run locally in your browser — nothing is uploaded or stored on a server.</div>
+<div class="toast" id="toast"><span class="dot"></span><span id="toastMsg"></span></div>
 
 <script>
-/* ── Data ── */
+/* ═══ DATA — Semester 5 ═══ */
 const SUBS = [
-  {code:'CS2308', name:'Data Structures-II',               cr:3},
-  {code:'CS2309', name:'Theory of Computation',            cr:2},
-  {code:'CS2310', name:'Operating System',                 cr:3},
-  {code:'CS2311', name:'Software Engineering',             cr:3},
-  {code:'CS2312', name:'System & App. Development',        cr:1},
-  {code:'MM0703', name:'Internet of Things',               cr:3},
-  {code:'HS2003', name:'From Campus to Corporate - 2',     cr:2},
-  {code:'HS2004', name:'Reasoning & Aptitude Dev. - 4',    cr:1},
-  {code:'CS2313', name:'Design Thinking - 2',              cr:1},
-  {code:'CS2314', name:'Engg. Design & Innovation - 2',    cr:2},
+  {code:'CS3212',      name:'Design and Analysis of Algorithm', cat:'DC',  type:'Theory', cr:4},
+  {code:'CS3213',      name:'Computer Networks',                 cat:'DC',  type:'Theory', cr:3},
+  {code:'CS3212A',     name:'Web Technologies',                  cat:'DEL', type:'Theory', cr:4},
+  {code:'MD3141',      name:'AWS Cloud Technology Consultant',   cat:'DEL', type:'Theory', cr:3},
+  {code:'MD3201',      name:'Fintech',                           cat:'IEL', type:'Theory', cr:4},
+  {code:'CS3227',      name:'Design Thinking - 3',                cat:'SM',  type:'Tutorial', cr:1},
+  {code:'CS3225',      name:'Engineering Research and Innovation-1', cat:'SM', type:'Lab', cr:2},
+  {code:'MM0701E',     name:'Data Science',                      cat:'DEL', type:'Theory', cr:3},
+  {code:'CS04COURSERA',name:'Coursera-4',                        cat:'DEL', type:'Theory', cr:0},
+  {code:'CS05COURSERA',name:'Coursera-5',                        cat:'IEL', type:'Theory', cr:0},
 ];
 
 const GRADES = [
-  {lbl:'— Select Grade —',     v:'',   pts:null, cls:'',  rng:''},
-  {lbl:'A+  (91–100) = 10',    v:'A+', pts:10,  cls:'ga', rng:'91–100'},
-  {lbl:'A   (81–90)  =  9',    v:'A',  pts:9,   cls:'gb', rng:'81–90'},
-  {lbl:'B+  (71–80)  =  8',    v:'B+', pts:8,   cls:'gc', rng:'71–80'},
-  {lbl:'B   (61–70)  =  7',    v:'B',  pts:7,   cls:'gc', rng:'61–70'},
-  {lbl:'C+  (51–60)  =  6',    v:'C+', pts:6,   cls:'gd', rng:'51–60'},
-  {lbl:'C   (46–50)  =  5',    v:'C',  pts:5,   cls:'gd', rng:'46–50'},
-  {lbl:'D   (40–45)  =  4',    v:'D',  pts:4,   cls:'gf', rng:'40–45'},
-  {lbl:'F   (00–39)  =  0',    v:'F',  pts:0,   cls:'gf', rng:'00–39'},
+  {lbl:'— Select Grade —', v:'',  pts:null, cls:'',     rng:''},
+  {lbl:'A+  (91–100) = 10', v:'A+', pts:10, cls:'g-hi',  rng:'91–100'},
+  {lbl:'A   (81–90)  =  9', v:'A',  pts:9,  cls:'g-hi',  rng:'81–90'},
+  {lbl:'B+  (71–80)  =  8', v:'B+', pts:8,  cls:'g-mid', rng:'71–80'},
+  {lbl:'B   (61–70)  =  7', v:'B',  pts:7,  cls:'g-mid', rng:'61–70'},
+  {lbl:'C+  (51–60)  =  6', v:'C+', pts:6,  cls:'g-mid', rng:'51–60'},
+  {lbl:'C   (46–50)  =  5', v:'C',  pts:5,  cls:'g-mid', rng:'46–50'},
+  {lbl:'D   (40–45)  =  4', v:'D',  pts:4,  cls:'g-low', rng:'40–45'},
+  {lbl:'F   (00–39)  =  0', v:'F',  pts:0,  cls:'g-low', rng:'00–39'},
 ];
-const GM = {};
-GRADES.forEach(g => { if (g.v) GM[g.v] = g; });
+const GM = {}; GRADES.forEach(g => { if (g.v) GM[g.v] = g; });
+const gradeOpts = GRADES.map(g => `<option value="${g.v}">${g.lbl}</option>`).join('');
 
-const opts = GRADES.map(g => `<option value="${g.v}">${g.lbl}</option>`).join('');
+const selections = new Array(SUBS.length).fill('');
+const totalCredits = SUBS.reduce((a,s)=>a+s.cr, 0);
+document.getElementById('creditBadge').textContent = totalCredits + ' CR';
 
-/* ── Build Desktop Table ── */
+function updateTopMeta(){
+  const label = document.getElementById('semLabelInput').value || 'Semester 5';
+  document.getElementById('topMeta').textContent = `${label} · ${totalCredits} Credits`;
+}
+updateTopMeta();
+
+/* ═══ Build subject rows ═══ */
 const deskBody = document.getElementById('deskBody');
+const mobList  = document.getElementById('mobList');
+
 SUBS.forEach((s, i) => {
   const tr = document.createElement('tr');
   tr.innerHTML = `
-    <td style="color:#94a3b8;font-size:11px;font-weight:600;">${i+1}</td>
+    <td class="row-idx">${String(i+1).padStart(2,'0')}</td>
     <td>
-      <div class="sub-name-d">${s.name}</div>
-      <div class="sub-code-d">${s.code}</div>
+      <div class="subj-name">${s.name}</div>
+      <div class="subj-meta"><span>${s.code}</span><span class="subj-tag">${s.cat}</span><span class="subj-tag">${s.type}</span></div>
     </td>
-    <td class="center"><span class="cr-pill">${s.cr} Cr</span></td>
-    <td class="center">
-      <select class="gsel" id="dg${i}" onchange="pick(${i},this)">
-        ${opts}
-      </select>
-    </td>
-    <td class="center gp" id="dgp${i}">—</td>
+    <td class="c"><span class="cr-pill">${s.cr}</span></td>
+    <td class="c"><select class="gsel" id="dg${i}" onchange="pick(${i}, this.value)">${gradeOpts}</select></td>
+    <td class="c gp-cell" id="dgp${i}">—</td>
   `;
   deskBody.appendChild(tr);
-});
 
-/* ── Build Mobile Cards ── */
-const mobCards = document.getElementById('mobileCards');
-SUBS.forEach((s, i) => {
-  const div = document.createElement('div');
-  div.className = 'sub-card';
-  div.innerHTML = `
-    <div class="sub-card-top">
-      <span class="row-num">${i+1}</span>
-      <div class="sub-card-info">
-        <div class="sub-card-name">${s.name}</div>
-        <div class="sub-card-code">${s.code}</div>
+  const row = document.createElement('div');
+  row.className = 'mob-row';
+  row.innerHTML = `
+    <div class="mob-row-top">
+      <span class="mob-idx">${i+1}</span>
+      <div class="mob-info">
+        <div class="mob-name">${s.name}</div>
+        <div class="mob-meta"><span>${s.code}</span><span class="subj-tag">${s.cat}</span></div>
       </div>
       <span class="cr-pill">${s.cr} Cr</span>
     </div>
-    <div class="sub-card-bottom">
-      <select class="gsel" id="mg${i}" onchange="pick(${i},this)" style="flex:1;">
-        ${opts}
-      </select>
-      <span class="gp" id="mgp${i}" style="min-width:60px;text-align:right;">—</span>
+    <div class="mob-row-bottom">
+      <select class="gsel" id="mg${i}" onchange="pick(${i}, this.value)" style="flex:1;">${gradeOpts}</select>
+      <span class="gp-cell" id="mgp${i}" style="min-width:64px;text-align:right;">—</span>
     </div>
   `;
-  mobCards.appendChild(div);
+  mobList.appendChild(row);
 });
 
-/* ── Build Legend ── */
-const leg = document.getElementById('legend');
-GRADES.filter(g => g.v).forEach(g => {
+const legend = document.getElementById('legend');
+GRADES.filter(g=>g.v).forEach(g=>{
   const d = document.createElement('div');
-  d.className = 'gchip';
+  d.className = 'lg-chip';
   d.innerHTML = `<b>${g.v}</b><span class="rng">${g.rng}</span>= ${g.pts}`;
-  leg.appendChild(d);
+  legend.appendChild(d);
 });
 
-/* ── Pick grade ── */
-function pick(i, sel) {
-  const g = GM[sel.value];
-  // sync both desktop & mobile selects
-  const dSel = document.getElementById(`dg${i}`);
-  const mSel = document.getElementById(`mg${i}`);
-  if (sel !== dSel && dSel) dSel.value = sel.value;
-  if (sel !== mSel && mSel) mSel.value = sel.value;
+/* ═══ Grade pick ═══ */
+function pick(i, val){
+  selections[i] = val;
+  const dsel = document.getElementById('dg'+i);
+  const msel = document.getElementById('mg'+i);
+  if (dsel.value !== val) dsel.value = val;
+  if (msel.value !== val) msel.value = val;
+  [dsel, msel].forEach(sel=>{ sel.className = 'gsel' + (val ? ' '+GM[val].cls : ''); });
 
-  // update both GP cells
-  const earned = g ? `${SUBS[i].cr}×${g.pts} = ${SUBS[i].cr * g.pts}` : '—';
-  const cls = g ? 'gp on' : 'gp';
-  const dc = document.getElementById(`dgp${i}`);
-  const mc = document.getElementById(`mgp${i}`);
-  if (dc) { dc.textContent = earned; dc.className = cls; }
-  if (mc) { mc.textContent = earned; mc.className = cls; }
+  const gp = val ? (SUBS[i].cr * GM[val].pts) : null;
+  const text = gp===null ? '—' : `${SUBS[i].cr}×${GM[val].pts} = ${gp}`;
+  const dgp = document.getElementById('dgp'+i);
+  const mgp = document.getElementById('mgp'+i);
+  dgp.textContent = text; dgp.className = 'gp-cell' + (val?' on':'');
+  mgp.textContent = text; mgp.className = 'gp-cell' + (val?' on':'');
 
-  [dSel, mSel].forEach(s => {
-    if (s) s.className = 'gsel' + (g ? ' ' + g.cls : '');
-  });
-
-  calcSGPA();
+  computeSGPA();
 }
 
-/* ── SGPA calc ── */
-function calcSGPA() {
-  let total = 0, cnt = 0, parts = [];
-  SUBS.forEach((s, i) => {
-    const g = GM[document.getElementById(`dg${i}`).value];
-    if (g) { total += s.cr * g.pts; cnt++; parts.push(`${s.cr}×${g.pts}`); }
+function computeSGPA(){
+  let earnedCredits = 0, weighted = 0, count = 0;
+  SUBS.forEach((s,i)=>{
+    if (selections[i]){ earnedCredits += s.cr; weighted += s.cr * GM[selections[i]].pts; count++; }
   });
 
-  const numEl = document.getElementById('sgpaNum');
-  const fmlEl = document.getElementById('fml');
-  const tagEl = document.getElementById('sgpaTag');
-  const barEl = document.getElementById('barFill');
+  const fml = document.getElementById('fml');
+  const bar = document.getElementById('barFill');
+  const orb = document.getElementById('orb');
+  const sgpaNum = document.getElementById('sgpaNum');
+  const sgpaTag = document.getElementById('sgpaTag');
 
-  if (!cnt) {
-    numEl.textContent = '—'; numEl.className = 'sgpa-big empty';
-    fmlEl.innerHTML = 'Select a grade for each subject to calculate your SGPA';
-    tagEl.textContent = '—'; barEl.style.width = '0%';
+  if (count === 0){
+    fml.innerHTML = 'Select a grade for each subject to begin';
+    bar.style.width = '0%';
+    orb.classList.remove('filled');
+    sgpaNum.textContent = '—';
+    sgpaTag.textContent = 'Not yet calculated';
+    syncCurrentSemInLedger(null);
     return;
   }
-  const val = (total / 21).toFixed(2);
-  numEl.textContent = val; numEl.className = 'sgpa-big';
-  fmlEl.innerHTML = `<b>(${parts.join(' + ')}) = ${total}</b> ÷ 21 = <b>${val}</b>${cnt < 10 ? ' &nbsp;<span style="color:#f59e0b;font-size:11px;">▲ partial</span>' : ''}`;
-  tagEl.textContent = perfLabel(parseFloat(val));
-  barEl.style.width = `${(parseFloat(val) / 10) * 100}%`;
+
+  const sgpa = earnedCredits > 0 ? (weighted / earnedCredits) : 0;
+  const sgpaRounded = sgpa.toFixed(2);
+
+  fml.innerHTML = `<b>${weighted}</b> grade points ÷ <b>${earnedCredits}</b> credits across <b>${count}/${SUBS.length}</b> subjects &nbsp;<code>SGPA = ΣCr×Pts / ΣCr</code>`;
+  bar.style.width = Math.min(100, (sgpa/10)*100) + '%';
+  sgpaNum.textContent = sgpaRounded;
+  orb.classList.remove('filled'); void orb.offsetWidth; orb.classList.add('filled');
+  sgpaTag.textContent = count < SUBS.length ? `${count} of ${SUBS.length} graded` : 'All subjects graded';
+
+  syncCurrentSemInLedger(sgpaRounded);
 }
 
-function perfLabel(v) {
-  if (v >= 9.5) return '🏆 Outstanding';
-  if (v >= 9.0) return '⭐ Excellent';
-  if (v >= 8.0) return '✅ Very Good';
-  if (v >= 7.0) return '👍 Good';
-  if (v >= 6.0) return '📘 Average';
-  if (v >= 4.0) return '⚠️ Below Average';
-  return '❌ Fail';
+/* ═══ CGPA Ledger — array-based, add/remove only splices ═══ */
+let semesters = [
+  {label:'Semester 1', value:'', isCurrent:false},
+  {label:'Semester 2', value:'', isCurrent:false},
+  {label:'Semester 3', value:'', isCurrent:false},
+  {label:'Semester 4', value:'', isCurrent:false},
+  {label:'Semester 5', value:'', isCurrent:true},
+];
+
+function syncCurrentSemInLedger(sgpaValue){
+  const cur = semesters.find(s=>s.isCurrent);
+  if (cur){ cur.value = sgpaValue !== null ? sgpaValue : ''; renderLedger(); }
 }
 
-/* ── CGPA ── */
-let NSEM = 4;
-function buildSems() {
-  const grid = document.getElementById('semGrid');
-  grid.innerHTML = '';
-  for (let i = 1; i <= NSEM; i++) {
-    const curr = i === 4;
-    const g = document.createElement('div');
-    g.className = 'sem-grp';
-    g.innerHTML = `
-      <label class="${curr ? 'curr' : ''}">${curr ? '⚡ ' : ''}Sem ${i}${curr ? ' (Current)' : ''}</label>
-      <input type="number" inputmode="decimal" class="sem-input${curr ? ' curr-inp' : ''}" id="s${i}"
-        placeholder="${curr ? 'Expected...' : 'e.g. 8.50'}"
-        min="0" max="10" step="0.01" oninput="calcCGPA()">
+function updateLabels(){
+  updateTopMeta();
+  const label = document.getElementById('semLabelInput').value || 'Semester 5';
+  const cur = semesters.find(s=>s.isCurrent);
+  if (cur){ cur.label = label; renderLedger(); }
+}
+
+function renderLedger(){
+  const wrap = document.getElementById('semLedger');
+  wrap.innerHTML = '';
+  semesters.forEach((sem, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'sem-row' + (sem.isCurrent ? ' is-current' : '');
+    row.style.animationDelay = (idx * 0.04) + 's';
+    row.innerHTML = `
+      <div class="sem-row-idx">${idx+1}</div>
+      <div class="sem-row-label">
+        <div class="t1">${sem.label}${sem.isCurrent ? ' <span style="color:#67E8F9;font-weight:600;">· synced</span>' : ''}</div>
+        <div class="t2">${sem.isCurrent ? 'auto-filled from Section 1' : 'editable'}</div>
+      </div>
+      <input class="sem-input" type="number" min="0" max="10" step="0.01"
+        placeholder="—" value="${sem.value}"
+        ${sem.isCurrent ? 'readonly' : ''}
+        oninput="onSemInput(${idx}, this.value)">
+      <div class="sem-row-del" onclick="removeSem(${idx})" title="Remove this semester">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </div>
     `;
-    grid.appendChild(g);
-  }
-  calcCGPA();
-}
-function addSem() { NSEM++; buildSems(); }
-function rmSem()  { if (NSEM > 1) { NSEM--; buildSems(); } }
-
-function calcCGPA() {
-  let total = 0, cnt = 0, parts = [];
-  for (let i = 1; i <= NSEM; i++) {
-    const v = parseFloat(document.getElementById(`s${i}`)?.value);
-    if (!isNaN(v) && v >= 0 && v <= 10) { total += v; cnt++; parts.push(v.toFixed(2)); }
-  }
-
-  const numEl = document.getElementById('cgpaNum');
-  const fmlEl = document.getElementById('cgpaFml');
-  const tag   = document.getElementById('cgpaPerfTag');
-
-  if (!cnt) {
-    numEl.textContent = '—'; numEl.className = 'cgpa-big empty';
-    fmlEl.textContent = 'Enter semester SGPAs above to see your CGPA';
-    tag.innerHTML = ''; return;
-  }
-  const val = (total / NSEM).toFixed(2);
-  numEl.textContent = val; numEl.className = 'cgpa-big';
-  fmlEl.innerHTML = `<b>(${parts.join(' + ')})</b><br>÷ <b>${NSEM} sems</b> = <b>${val}</b>`;
-
-  const p = perfLabel(parseFloat(val));
-  const cm = {
-    '🏆':['#fffbeb','#d97706'], '⭐':['#fffbeb','#d97706'],
-    '✅':['#ecfdf5','#059669'], '👍':['#eff6ff','#1d4ed8'],
-    '📘':['#fff7ed','#ea580c'], '⚠️':['#fef2f2','#dc2626'], '❌':['#fef2f2','#dc2626']
-  };
-  const k = Object.keys(cm).find(x => p.startsWith(x)) || '👍';
-  tag.innerHTML = `<div class="perf-tag" style="background:${cm[k][0]};color:${cm[k][1]};border:1px solid ${cm[k][1]}33;">${p}</div>`;
+    wrap.appendChild(row);
+  });
+  document.getElementById('semCountLabel').textContent = semesters.length + ' semester' + (semesters.length===1?'':'s') + ' logged';
+  computeCGPA();
 }
 
-buildSems();
+function onSemInput(idx, val){ semesters[idx].value = val; computeCGPA(); }
+
+function addSem(){
+  const n = semesters.length + 1;
+  semesters.push({label:'Semester '+n, value:'', isCurrent:false});
+  renderLedger();
+  showToast('Semester '+n+' added');
+}
+
+function removeSem(idx){
+  const wasCurrent = semesters[idx].isCurrent;
+  semesters.splice(idx, 1);
+  renderLedger();
+  showToast(wasCurrent ? 'Current semester unlinked' : 'Semester removed');
+}
+
+function computeCGPA(){
+  const valid = semesters.map(s=>parseFloat(s.value)).filter(v=>!isNaN(v) && v>=0 && v<=10);
+  const cgpaNum = document.getElementById('cgpaNum');
+  const cgpaFml = document.getElementById('cgpaFml');
+  const perfTag = document.getElementById('cgpaPerfTag');
+
+  if (valid.length === 0){
+    cgpaNum.textContent = '—'; cgpaNum.classList.add('empty');
+    cgpaFml.innerHTML = 'Log your semester SGPAs above to see your CGPA';
+    perfTag.innerHTML = '';
+    return;
+  }
+
+  const sum = valid.reduce((a,b)=>a+b, 0);
+  const cgpa = sum / valid.length;
+  const cgpaRounded = cgpa.toFixed(2);
+
+  cgpaNum.textContent = cgpaRounded; cgpaNum.classList.remove('empty');
+  cgpaFml.innerHTML = `<b>${sum.toFixed(2)}</b> total SGPA points ÷ <b>${valid.length}</b> semester${valid.length===1?'':'s'} &nbsp;<code>CGPA = ΣSGPA / n</code>`;
+
+  let tagHtml = '';
+  if (cgpa >= 9)      tagHtml = `<span class="perf-tag" style="background:rgba(52,211,153,0.14);color:#6EE7B7;">Outstanding</span>`;
+  else if (cgpa >= 8) tagHtml = `<span class="perf-tag" style="background:rgba(52,211,153,0.14);color:#6EE7B7;">Excellent</span>`;
+  else if (cgpa >= 7) tagHtml = `<span class="perf-tag" style="background:rgba(251,191,36,0.14);color:#FCD34D;">Very Good</span>`;
+  else if (cgpa >= 6) tagHtml = `<span class="perf-tag" style="background:rgba(251,191,36,0.14);color:#FCD34D;">Good</span>`;
+  else if (cgpa >= 5) tagHtml = `<span class="perf-tag" style="background:rgba(248,113,113,0.14);color:#FCA5A5;">Average</span>`;
+  else                tagHtml = `<span class="perf-tag" style="background:rgba(248,113,113,0.14);color:#FCA5A5;">Needs Improvement</span>`;
+  perfTag.innerHTML = tagHtml;
+}
+
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+renderLedger();
 </script>
 </body>
 </html>
