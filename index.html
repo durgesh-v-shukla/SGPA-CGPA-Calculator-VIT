@@ -249,7 +249,7 @@
             box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
         }
 
-        /* ── Quote Card ── */
+        /* ── Quote Card (carousel) ── */
         .quote-card {
             position: relative;
             z-index: 1;
@@ -269,11 +269,13 @@
             align-items: center;
             gap: 14px;
             box-shadow: var(--shadow);
+            transition: background 0.3s;
         }
         .quote-inner .q-icon {
             font-size: 22px;
             flex-shrink: 0;
-            opacity: 0.6;
+            opacity: 0.7;
+            transition: transform 0.3s;
         }
         .quote-inner .q-text {
             font-size: 13.5px;
@@ -281,6 +283,7 @@
             font-style: italic;
             line-height: 1.6;
             flex: 1;
+            transition: opacity 0.4s ease;
         }
         .quote-inner .q-text strong {
             color: var(--text);
@@ -289,6 +292,14 @@
         .quote-inner .q-emoji {
             font-size: 18px;
             flex-shrink: 0;
+            opacity: 0.7;
+        }
+        .quote-inner.fade .q-text {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        .quote-inner .q-text {
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         /* ── Page ── */
@@ -379,7 +390,7 @@
             font-weight: 500;
         }
 
-        /* ── Scenario Buttons ── */
+        /* ── Scenario Buttons (only Quick Grade Scenarios) ── */
         .scenario-section {
             padding: 16px 22px 14px;
             border-bottom: 1px solid var(--border-soft);
@@ -455,12 +466,6 @@
         }
         .scenario-btn .emoji {
             margin-right: 4px;
-        }
-
-        .scenario-divider {
-            height: 1px;
-            background: var(--border-soft);
-            margin: 4px 0 8px;
         }
 
         /* ── Desktop table ── */
@@ -1454,9 +1459,9 @@
         </div>
     </header>
 
-    <!-- ─── Quote Card ─── -->
-    <div class="quote-card" id="quoteCard">
-        <div class="quote-inner">
+    <!-- ─── Quote Card (carousel) ─── -->
+    <div class="quote-card">
+        <div class="quote-inner" id="quoteInner">
             <span class="q-icon" id="qIcon">💡</span>
             <span class="q-text" id="qText">Loading quote…</span>
             <span class="q-emoji" id="qEmoji">✨</span>
@@ -1483,7 +1488,7 @@
                 <div class="card-strip-r">A+(10) · A(9) · B+(8) · B(7) · C+(6) · C(5) · D(4) · F(0)</div>
             </div>
 
-            <!-- Quick Scenarios -->
+            <!-- Quick Grade Scenarios (only) -->
             <div class="scenario-section">
                 <div class="scenario-label">⚡ Quick Grade Scenarios</div>
                 <div class="scenario-row" id="quickScenarios">
@@ -1493,17 +1498,6 @@
                     <button class="scenario-btn" onclick="fillAll('B')"><span class="emoji">📙</span>All B</button>
                     <button class="scenario-btn" onclick="fillAll('C+')"><span class="emoji">📗</span>All C+</button>
                     <button class="scenario-btn danger" onclick="clearAllGrades()"><span class="emoji">🗑</span>Reset</button>
-                </div>
-
-                <div class="scenario-divider"></div>
-
-                <div class="scenario-label">🎯 Smart Prediction Scenarios</div>
-                <div class="scenario-row" id="smartScenarios">
-                    <button class="scenario-btn accent" onclick="applyScenario('dream')"><span class="emoji">🏆</span>Dream Semester</button>
-                    <button class="scenario-btn accent" onclick="applyScenario('excellent')"><span class="emoji">⭐</span>Excellent</button>
-                    <button class="scenario-btn" onclick="applyScenario('above')"><span class="emoji">📘</span>Above Average</button>
-                    <button class="scenario-btn" onclick="applyScenario('safe')"><span class="emoji">📙</span>Safe Semester</button>
-                    <button class="scenario-btn" onclick="applyScenario('pass')"><span class="emoji">😅</span>Just Pass</button>
                 </div>
             </div>
 
@@ -1622,8 +1616,8 @@
 
     <script>
         /* ═══════════════════════════════════════════════════
-                   DATA — VIT Computer Engineering Semester 5
-                ═══════════════════════════════════════════════════ */
+               DATA — VIT Computer Engineering Semester 5
+            ═══════════════════════════════════════════════════ */
         const SUBS = [
             { code: 'CS3212', name: 'Design and Analysis of Algorithm', cat: 'DC', type: 'Theory', cr: 4 },
             { code: 'CS3213', name: 'Computer Networks', cat: 'DC', type: 'Theory', cr: 3 },
@@ -1656,7 +1650,7 @@
         const totalCredits = SUBS.reduce((a, s) => a + s.cr, 0);
         document.getElementById('creditBadge').textContent = totalCredits + ' CR';
 
-        /* ─── Quotes ─── */
+        /* ─── Quote Carousel ─── */
         const QUOTES = [
             { icon: '💡', text: 'Success is built one semester at a time.', emoji: '🚀' },
             { icon: '📚', text: 'Consistency beats last-minute preparation.', emoji: '📈' },
@@ -1668,15 +1662,44 @@
             { icon: '🌟', text: 'Every expert was once a beginner. Keep going.', emoji: '🌱' },
             { icon: '🔥', text: 'The best time to start was yesterday. The next best is now.', emoji: '⏳' },
             { icon: '🎓', text: 'Your degree is a journey, not a single grade.', emoji: '🌟' },
+            { icon: '🤷', text: 'CGPA is like a credit score — you only care when it’s low.', emoji: '😏' },
+            { icon: '😇', text: 'Internal marks: the true wildcard of every semester.', emoji: '🎲' },
+            { icon: '🧠', text: 'Study like you’re explaining it to a 5-year-old.', emoji: '👶' },
+            { icon: '📉', text: 'Don’t let one bad grade define your semester — or your life.', emoji: '💪' },
+            { icon: '🎉', text: 'CGPAs are temporary, but knowledge is forever… or at least until the next exam.', emoji: '🤓' },
         ];
 
-        function setRandomQuote() {
-            const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-            document.getElementById('qIcon').textContent = q.icon;
-            document.getElementById('qText').innerHTML = q.text;
-            document.getElementById('qEmoji').textContent = q.emoji;
+        let quoteIndex = 0;
+        let quoteTimer;
+
+        function showQuote(index) {
+            const q = QUOTES[index % QUOTES.length];
+            const inner = document.getElementById('quoteInner');
+            const icon = document.getElementById('qIcon');
+            const text = document.getElementById('qText');
+            const emoji = document.getElementById('qEmoji');
+
+            // Fade out
+            inner.classList.add('fade');
+            setTimeout(() => {
+                icon.textContent = q.icon;
+                text.textContent = q.text;
+                emoji.textContent = q.emoji;
+                inner.classList.remove('fade');
+            }, 300);
         }
-        setRandomQuote();
+
+        function startQuoteCarousel() {
+            // Show a random quote first
+            quoteIndex = Math.floor(Math.random() * QUOTES.length);
+            showQuote(quoteIndex);
+            // Then cycle every 5 seconds
+            clearInterval(quoteTimer);
+            quoteTimer = setInterval(() => {
+                quoteIndex = (quoteIndex + 1) % QUOTES.length;
+                showQuote(quoteIndex);
+            }, 5000);
+        }
 
         /* ─── Build subject rows ─── */
         const deskBody = document.getElementById('deskBody');
@@ -1821,33 +1844,6 @@
                     pick(i, ''); }
             });
             showToast('All grades cleared');
-        }
-
-        const SCENARIOS = {
-            dream: ['A+', 'A+', 'A+', 'A+', 'A+', 'A+', 'A+', 'A+', 'A+', 'A+'],
-            excellent: ['A+', 'A', 'A+', 'A', 'A', 'A+', 'A', 'A', 'A+', 'A'],
-            above: ['A', 'B+', 'A', 'B+', 'B+', 'A', 'B+', 'A', 'B+', 'A'],
-            safe: ['B+', 'B', 'B+', 'B', 'B', 'B+', 'B', 'B', 'B+', 'B'],
-            pass: ['C+', 'C', 'C+', 'C', 'C', 'C+', 'C', 'C', 'C+', 'C'],
-        };
-
-        function applyScenario(name) {
-            const grades = SCENARIOS[name];
-            if (!grades) return;
-            SUBS.forEach((_, i) => {
-                const g = grades[i] || 'A+';
-                const sel = document.getElementById('dg' + i);
-                if (sel) { sel.value = g;
-                    pick(i, g); }
-            });
-            const labels = {
-                dream: 'Dream Semester',
-                excellent: 'Excellent',
-                above: 'Above Average',
-                safe: 'Safe Semester',
-                pass: 'Just Pass'
-            };
-            showToast(`🎯 ${labels[name] || name} applied`);
         }
 
         /* ─────────────────────────────────────────────────────────────
@@ -2088,7 +2084,7 @@
         /* ─────────────────────────────────────────────────────────────
                    INIT
                 ───────────────────────────────────────────────────────────── */
-        // Try load saved state, otherwise render defaults
+        // Load saved state or default
         const loaded = loadState();
         if (!loaded) {
             renderLedger();
@@ -2096,10 +2092,10 @@
         }
         updateLabels();
 
-        // Also re-save whenever a grade changes (already called in pick)
-        // But we also want to save on sem input which already calls saveState
+        // Start quote carousel (5-second interval)
+        startQuoteCarousel();
 
-        // set initial save message
+        // save message
         document.getElementById('saveMsg').textContent = '✅ Your progress is automatically saved.';
 
         console.log('🎓 VIT SGPA Calculator ready!');
