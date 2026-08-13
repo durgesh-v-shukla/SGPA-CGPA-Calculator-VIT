@@ -6,7 +6,7 @@
 
 A beautifully designed, feature-rich, and fully responsive **SGPA & CGPA Calculator** built using **HTML, CSS, and JavaScript**.
 
-Designed specifically for **Computer Engineering Semester 5** students at **Vishwakarma Institute of Technology (VIT), Pune**, this calculator follows the official grading system while providing a premium user experience with modern UI, animations, automatic saving, quick grade scenarios, and live calculations.
+Designed specifically for **Computer Engineering Semester 5** students at **Vishwakarma Institute of Technology (VIT), Pune**, this calculator follows the official grading system while providing a premium glassmorphism user experience — with frosted glass cards, live calculations, automatic saving, and a mobile-first layout with zero horizontal scrolling.
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Now-22c55e?style=for-the-badge)](https://sgpa-cgpa-calculator-vit.vercel.app/)
 [![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)]()
@@ -28,8 +28,9 @@ Designed specifically for **Computer Engineering Semester 5** students at **Vish
 - 📖 Official VIT grading system
 - ⚡ Live SGPA calculation
 - 📊 Real-time Credit × Grade Point calculations
-- 🌈 Animated SGPA progress bar
-- 🔮 Beautiful glowing SGPA orb
+- 📱 **No-scroll subject list** — subject name and grade selector always sit side by side on one screen, on any device, with no left/right scrolling
+- 🌈 Animated, glowing SGPA progress bar
+- 🔮 Glowing circular SGPA gauge
 - 📋 One-click Copy SGPA button
 - 📱 Mobile-friendly responsive layout
 
@@ -91,20 +92,21 @@ Automatically changes every **5 seconds**.
 
 ---
 
-## 🎨 Premium User Interface
+## 🎨 Premium Glassmorphism Interface
 
-Designed with modern UI principles.
+Redesigned with a true frosted-glass aesthetic.
 
 Features include:
 
-- ✨ Glassmorphism cards
-- 🌌 Aurora animated background
-- 💫 Smooth transitions
-- 🌈 Gradient accents
-- 📱 Fully responsive
-- 🎯 Perfectly centered layout
-- 🖥 Beautiful desktop experience
-- 📲 Mobile optimized
+- ✨ Real glassmorphism cards — `backdrop-filter: blur()` with translucent, soft-white surfaces
+- 🌈 Soft multi-color gradient backdrop (amber, violet, and emerald blurred blobs) that stays fixed behind the glass
+- 💫 Hover micro-animations — cards lift, buttons glow and scale, grade cells pop on tap/hover
+- 🔆 Glowing amber accents on the SGPA gauge and progress bar
+- 🔤 Fluid, `clamp()`-based typography that scales cleanly from small phones to laptop screens
+- 📱 Subject rows redesigned as a flexible list (not a table) so nothing ever needs side-scrolling
+- 🎯 Perfectly centered, breathable layout
+- 🖥 Wider, larger type on laptop/desktop screens (1100px+)
+- 📲 Fully optimized for mobile: compact grade selectors, wrapping subject names, touch-friendly tap targets
 
 ---
 
@@ -223,10 +225,10 @@ No dependencies required.
 # 💻 Technologies Used
 
 - HTML5
-- CSS3
+- CSS3 (glassmorphism, `backdrop-filter`, `clamp()` fluid typography)
 - JavaScript (ES6)
 - LocalStorage API
-- Google Fonts (Inter & Space Grotesk)
+- Google Fonts (Instrument Serif & Inter)
 
 ---
 
@@ -238,6 +240,8 @@ The calculator is optimized for
 - 🖥 Laptop
 - 📱 Mobile
 - 📲 Tablets
+
+The subject grading list is built as a flexible row layout rather than a fixed-width table, so the subject name and its grade dropdown are always visible together on a single screen — no horizontal scrolling required at any screen size.
 
 ---
 
@@ -257,7 +261,9 @@ Try the calculator instantly without downloading anything.
 
 ✅ Automatic Saving
 
-✅ Beautiful Glassmorphism UI
+✅ Refined Glassmorphism UI
+
+✅ No-Scroll Subject List
 
 ✅ Quick Grade Scenarios
 
@@ -265,7 +271,7 @@ Try the calculator instantly without downloading anything.
 
 ✅ Quote Carousel
 
-✅ Responsive Design
+✅ Fluid, Responsive Typography
 
 ✅ Offline Support
 
