@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" width="1000" height="340" role="img" aria-labelledby="t d">
+  <title id="t">How the calculator works</title>
+  <desc id="d">Three inputs (Semester 5 grades, previous semester SGPAs with credits, and a target CGPA) feed a credit-weighted calculation that produces your SGPA, your CGPA, and the SGPA you need.</desc>
+  <style>
+    .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#D97706;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:3 9;animation:dash 1.2s linear infinite}
+    .flow2{animation-duration:1.5s}
+    @keyframes dash{to{stroke-dashoffset:-12}}
+    .core{transform-box:fill-box;transform-origin:center;animation:pulse 3.2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+    .out{animation:glow 4.8s ease-in-out infinite}
+    .o2{animation-delay:1.6s}.o3{animation-delay:3.2s}
+    @keyframes glow{0%,100%{stroke:#E7E0D2}15%,35%{stroke:#16A34A}50%{stroke:#E7E0D2}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+  <rect width="1000" height="340" rx="20" fill="#F7F3EA"/>
+  <rect x=".5" y=".5" width="999" height="339" rx="20" fill="none" stroke="#E7E0D2"/>
+
+  <!-- column labels -->
+  <g class="sans" font-size="11" font-weight="700" letter-spacing="1.4" fill="#78716C" text-anchor="middle">
+    <text x="145" y="38">YOU ENTER</text>
+    <text x="500" y="38">THE MATH</text>
+    <text x="855" y="38">YOU GET</text>
+  </g>
+
+  <!-- connectors: inputs -> core -->
+  <path class="flow" d="M260 95 C 330 95, 330 170, 380 170"/>
+  <path class="flow flow2" d="M260 195 C 320 195, 330 170, 380 170"/>
+  <path class="flow" d="M260 295 C 330 295, 330 190, 380 190" transform="translate(0,-6)"/>
+  <!-- connectors: core -> outputs -->
+  <path class="flow" d="M620 170 C 670 170, 670 95, 740 95"/>
+  <path class="flow flow2" d="M620 170 C 680 170, 690 195, 740 195"/>
+  <path class="flow" d="M620 184 C 670 184, 670 295, 740 295"/>
+
+  <!-- inputs -->
+  <g class="sans">
+    <rect x="30" y="60" width="230" height="70" rx="14" fill="#FFFFFF" stroke="#E7E0D2"/>
+    <text x="50" y="88" font-size="15" font-weight="700" fill="#1C1917">1 · Semester 5 grades</text>
+    <text x="50" y="110" font-size="12.5" fill="#78716C">pick A+ … F for each subject</text>
+
+    <rect x="30" y="160" width="230" height="70" rx="14" fill="#FFFFFF" stroke="#E7E0D2"/>
+    <text x="50" y="188" font-size="15" font-weight="700" fill="#1C1917">2 · Sem 1–4 results</text>
+    <text x="50" y="210" font-size="12.5" fill="#78716C">SGPA and credits per semester</text>
+
+    <rect x="30" y="260" width="230" height="70" rx="14" fill="#FFFFFF" stroke="#E7E0D2"/>
+    <text x="50" y="288" font-size="15" font-weight="700" fill="#1C1917">3 · Target CGPA</text>
+    <text x="50" y="310" font-size="12.5" fill="#78716C">the number you are aiming for</text>
+  </g>
+
+  <!-- core -->
+  <g class="core">
+    <rect x="380" y="115" width="240" height="140" rx="18" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1.5"/>
+    <g class="sans" text-anchor="middle">
+      <text x="500" y="158" font-size="16" font-weight="700" fill="#92400E">Credit-weighted math</text>
+      <text class="mono" x="500" y="190" font-size="13" fill="#92400E">Σ(credits × points)</text>
+      <text class="mono" x="500" y="210" font-size="13" fill="#92400E">─────────────────</text>
+      <text class="mono" x="500" y="230" font-size="13" fill="#92400E">Σ credits</text>
+    </g>
+  </g>
+
+  <!-- outputs -->
+  <g class="sans">
+    <rect class="out" x="740" y="60" width="230" height="70" rx="14" fill="#FFFFFF" stroke="#E7E0D2" stroke-width="2"/>
+    <text x="760" y="88" font-size="15" font-weight="700" fill="#1C1917">Semester 5 SGPA</text>
+    <text x="760" y="110" font-size="12.5" fill="#78716C">updates as you pick grades</text>
+
+    <rect class="out o2" x="740" y="160" width="230" height="70" rx="14" fill="#FFFFFF" stroke="#E7E0D2" stroke-width="2"/>
+    <text x="760" y="188" font-size="15" font-weight="700" fill="#1C1917">CGPA after Sem 5</text>
+    <text x="760" y="210" font-size="12.5" fill="#78716C">exact when credits are entered</text>
+
+    <rect class="out o3" x="740" y="260" width="230" height="70" rx="14" fill="#FFFFFF" stroke="#E7E0D2" stroke-width="2"/>
+    <text x="760" y="288" font-size="15" font-weight="700" fill="#1C1917">SGPA you need</text>
+    <text x="760" y="310" font-size="12.5" fill="#78716C">or a note that it is out of reach</text>
+  </g>
+</svg>

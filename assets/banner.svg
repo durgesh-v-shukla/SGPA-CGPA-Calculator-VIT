@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" width="1280" height="320" role="img" aria-labelledby="t d">
+  <title id="t">SGPA and CGPA Calculator for VIT Pune</title>
+  <desc id="d">Banner with the project title and an animated SGPA result card.</desc>
+  <defs>
+    <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#F59E0B" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#8B5CF6" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gauge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#16A34A"/>
+    </linearGradient>
+    <clipPath id="round"><rect width="1280" height="320" rx="24"/></clipPath>
+  </defs>
+  <style>
+    .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+    .serif{font-family:Georgia,"Times New Roman",serif}
+    .blobA{animation:driftA 14s ease-in-out infinite alternate}
+    .blobB{animation:driftB 17s ease-in-out infinite alternate}
+    @keyframes driftA{from{transform:translate(0,0)}to{transform:translate(70px,26px)}}
+    @keyframes driftB{from{transform:translate(0,0)}to{transform:translate(-60px,-20px)}}
+    .num{opacity:0;animation:cyc 9s infinite backwards}
+    .n1{opacity:1}
+    .d2{animation-delay:3s}
+    .d3{animation-delay:6s}
+    @keyframes cyc{
+      0%{opacity:0;transform:translateY(10px)}
+      4%{opacity:1;transform:translateY(0)}
+      29%{opacity:1;transform:translateY(0)}
+      33%,100%{opacity:0;transform:translateY(-10px)}
+    }
+    .bar{transform-origin:left center;transform-box:fill-box;animation:fill 9s infinite}
+    @keyframes fill{
+      0%{transform:scaleX(.9)} 
+      11%{transform:scaleX(.9)}
+      13%,30%{transform:scaleX(.94)}
+      36%,63%{transform:scaleX(.97)}
+      66%,100%{transform:scaleX(.9)}
+    }
+    .chip{animation:pop 4.5s ease-in-out infinite}
+    .c2{animation-delay:.5s}.c3{animation-delay:1s}.c4{animation-delay:1.5s}.c5{animation-delay:2s}
+    @keyframes pop{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+
+  <g clip-path="url(#round)">
+    <rect width="1280" height="320" fill="#F7F3EA"/>
+    <circle class="blobA" cx="150" cy="30" r="260" fill="url(#glowA)"/>
+    <circle class="blobB" cx="1180" cy="60" r="250" fill="url(#glowB)"/>
+    <circle class="blobA" cx="760" cy="330" r="230" fill="url(#glowA)" opacity=".7"/>
+  </g>
+  <rect x=".5" y=".5" width="1279" height="319" rx="24" fill="none" stroke="#E7E0D2"/>
+
+  <!-- left: title block -->
+  <rect x="72" y="62" width="262" height="28" rx="14" fill="#FEF3C7"/>
+  <text class="sans" x="90" y="81" font-size="12" font-weight="700" letter-spacing="1.4" fill="#D97706">VIT PUNE · COMPUTER ENGINEERING</text>
+
+  <text class="serif" x="72" y="160" font-size="66" letter-spacing="-1.5" fill="#1C1917">SGPA &amp; CGPA,</text>
+  <text class="serif" x="72" y="228" font-size="66" font-style="italic" letter-spacing="-1.5" fill="#D97706">sorted.</text>
+  <text class="sans" x="72" y="272" font-size="18" fill="#78716C">Find your SGPA, your CGPA, and the SGPA you need to hit a target.</text>
+
+  <!-- right: result card -->
+  <g transform="translate(830,58)">
+    <rect width="380" height="204" rx="20" fill="#FFFFFF" stroke="#E7E0D2"/>
+    <text class="sans" x="28" y="42" font-size="11" font-weight="700" letter-spacing="1.4" fill="#78716C">SEMESTER 5 SGPA</text>
+    <g class="serif" font-size="74" letter-spacing="-2" fill="#1C1917">
+      <text class="num n1" x="28" y="122">9.00</text>
+      <text class="num d2" x="28" y="122">9.43</text>
+      <text class="num d3" x="28" y="122">9.86</text>
+    </g>
+    <rect x="28" y="142" width="324" height="8" rx="4" fill="#E7E0D2"/>
+    <rect class="bar" x="28" y="142" width="324" height="8" rx="4" fill="url(#gauge)"/>
+    <g class="sans" font-size="12" font-weight="700" text-anchor="middle">
+      <g class="chip"><rect x="28" y="164" width="52" height="24" rx="12" fill="#F0FDF4" stroke="#10B981"/><text x="54" y="180" fill="#065F46">A+</text></g>
+      <g class="chip c2"><rect x="92" y="164" width="52" height="24" rx="12" fill="#EFF6FF" stroke="#3B82F6"/><text x="118" y="180" fill="#1E40AF">A</text></g>
+      <g class="chip c3"><rect x="156" y="164" width="52" height="24" rx="12" fill="#F5F3FF" stroke="#8B5CF6"/><text x="182" y="180" fill="#5B21B6">B+</text></g>
+      <g class="chip c4"><rect x="220" y="164" width="52" height="24" rx="12" fill="#FFFBEB" stroke="#F59E0B"/><text x="246" y="180" fill="#92400E">B</text></g>
+      <g class="chip c5"><rect x="284" y="164" width="52" height="24" rx="12" fill="#FFF7ED" stroke="#F97316"/><text x="310" y="180" fill="#9A3412">C+</text></g>
+    </g>
+  </g>
+</svg>

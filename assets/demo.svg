@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" width="900" height="640" role="img" aria-labelledby="t d">
+  <title id="t">Calculator walkthrough with example numbers</title>
+  <desc id="d">An animated walkthrough: Semester 5 grades give an SGPA of 10.00, four earlier SGPAs give a CGPA of 9.18, and a target of 9.30 needs a Semester 5 SGPA of 9.80. A target of 9.40 is shown as out of reach.</desc>
+  <style>
+    .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+    .serif{font-family:Georgia,"Times New Roman",serif}
+    .a{animation:k_a 16s infinite backwards}
+    .b1{animation:k_b1 16s infinite backwards}
+    .b2{animation:k_b2 16s infinite backwards}
+    .b3{animation:k_b3 16s infinite backwards}
+    .b4{animation:k_b4 16s infinite backwards}
+    .bn{animation:k_bn 16s infinite backwards}
+    .bc{animation:k_bc 16s infinite backwards}
+    .c{animation:k_c 16s infinite backwards}
+    .t1{animation:k_t1 16s infinite backwards}
+    .t2{animation:k_t2 16s infinite backwards}
+    .v1{animation:k_v1 16s infinite backwards}
+    .v2{animation:k_v2 16s infinite backwards}
+@keyframes k_a{0%,2%{opacity:0;transform:translateY(8px)}5%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_b1{0%,12%{opacity:0;transform:translateY(8px)}15%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_b2{0%,15%{opacity:0;transform:translateY(8px)}18%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_b3{0%,18%{opacity:0;transform:translateY(8px)}21%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_b4{0%,21%{opacity:0;transform:translateY(8px)}24%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_bn{0%,26%{opacity:0;transform:translateY(8px)}29%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_bc{0%,31%{opacity:0;transform:translateY(8px)}34%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_c{0%,40%{opacity:0;transform:translateY(8px)}43%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_t1{0%,40%{opacity:0;transform:translateY(8px)}43%,68%{opacity:1;transform:translateY(0)}71%,100%{opacity:0}}
+@keyframes k_t2{0%,70%{opacity:0;transform:translateY(8px)}73%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes k_v1{0%,44%{opacity:0;transform:translateY(8px)}47%,68%{opacity:1;transform:translateY(0)}71%,100%{opacity:0}}
+@keyframes k_v2{0%,74%{opacity:0;transform:translateY(8px)}77%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+    .caret{animation:blink 1s steps(2) infinite}
+    @keyframes blink{50%{opacity:0}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important} .t2,.v2{display:none}}
+  </style>
+  <rect width="900" height="640" fill="#F7F3EA"/>
+  <rect x="10" y="10" width="880" height="620" rx="18" fill="#FFFFFF" stroke="#E7E0D2"/>
+
+  <!-- window bar -->
+  <circle cx="40" cy="34" r="5" fill="#F87171"/><circle cx="58" cy="34" r="5" fill="#FBBF24"/><circle cx="76" cy="34" r="5" fill="#34D399"/>
+  <rect x="110" y="22" width="300" height="24" rx="12" fill="#F5F5F4"/>
+  <text class="sans" x="260" y="38" font-size="12" text-anchor="middle" fill="#78716C">sgpa-cgpa-calculator-vit.vercel.app</text>
+  <line x1="10" y1="58" x2="890" y2="58" stroke="#E7E0D2"/>
+
+  <!-- step 1 -->
+  <g class="a">
+    <text class="sans" x="40" y="86" font-size="11" font-weight="700" letter-spacing="1.4" fill="#D97706">STEP 1 · SEMESTER 5 GRADES</text>
+    <g class="sans" font-size="12.5" font-weight="600" text-anchor="middle">
+      <rect x="40" y="102" width="72" height="30" rx="15" fill="#FEF3C7" stroke="#D97706"/><text x="76" y="122" fill="#D97706">All A+</text>
+      <rect x="122" y="102" width="64" height="30" rx="15" fill="#fff" stroke="#E7E0D2"/><text x="154" y="122" fill="#44403C">All A</text>
+      <rect x="196" y="102" width="72" height="30" rx="15" fill="#fff" stroke="#E7E0D2"/><text x="232" y="122" fill="#44403C">All B+</text>
+      <rect x="278" y="102" width="64" height="30" rx="15" fill="#fff" stroke="#E7E0D2"/><text x="310" y="122" fill="#44403C">All B</text>
+    </g>
+    <text class="sans" x="860" y="92" font-size="11" font-weight="700" letter-spacing="1.4" text-anchor="end" fill="#78716C">SEMESTER 5 SGPA</text>
+    <text class="serif" x="860" y="138" font-size="48" letter-spacing="-1" text-anchor="end" fill="#1C1917">10.00</text>
+  </g>
+  <line x1="40" y1="160" x2="860" y2="160" stroke="#E7E0D2"/>
+
+  <!-- step 2 -->
+  <text class="sans b1" x="40" y="186" font-size="11" font-weight="700" letter-spacing="1.4" fill="#D97706">STEP 2 · PREVIOUS 4 SEMESTERS</text>
+  <g class="sans b1" font-size="11" font-weight="700" letter-spacing="1" fill="#78716C" text-anchor="middle">
+    <text x="300" y="214">SGPA</text>
+  </g>
+
+    <g class="b1">
+      <text class="sans" x="40" y="248" font-size="14" font-weight="600" fill="#44403C">Sem 1</text>
+      <rect x="250" y="228" width="100" height="28" rx="8" fill="#FDFBF6" stroke="#E7E0D2"/>
+      <text class="sans" x="300" y="247" font-size="14" font-weight="600" text-anchor="middle" fill="#1C1917">9.10</text>
+    </g>
+    <g class="b2">
+      <text class="sans" x="40" y="284" font-size="14" font-weight="600" fill="#44403C">Sem 2</text>
+      <rect x="250" y="264" width="100" height="28" rx="8" fill="#FDFBF6" stroke="#E7E0D2"/>
+      <text class="sans" x="300" y="283" font-size="14" font-weight="600" text-anchor="middle" fill="#1C1917">9.00</text>
+    </g>
+    <g class="b3">
+      <text class="sans" x="40" y="320" font-size="14" font-weight="600" fill="#44403C">Sem 3</text>
+      <rect x="250" y="300" width="100" height="28" rx="8" fill="#FDFBF6" stroke="#E7E0D2"/>
+      <text class="sans" x="300" y="319" font-size="14" font-weight="600" text-anchor="middle" fill="#1C1917">9.40</text>
+    </g>
+    <g class="b4">
+      <text class="sans" x="40" y="356" font-size="14" font-weight="600" fill="#44403C">Sem 4</text>
+      <rect x="250" y="336" width="100" height="28" rx="8" fill="#FDFBF6" stroke="#E7E0D2"/>
+      <text class="sans" x="300" y="355" font-size="14" font-weight="600" text-anchor="middle" fill="#1C1917">9.20</text>
+    </g>
+  <g class="b1">
+    <rect x="430" y="236" width="42" height="24" rx="12" fill="#D6D3D1"/>
+    <circle cx="442" cy="248" r="9" fill="#fff"/>
+    <text class="sans" x="484" y="253" font-size="14" font-weight="600" fill="#1C1917">I know my credits</text>
+    <text class="sans" x="430" y="282" font-size="12.5" fill="#78716C">Optional. Turn it on for an exact result.</text>
+  </g>
+  <g class="bn">
+    <text class="sans" x="860" y="236" font-size="11" font-weight="700" letter-spacing="1.4" text-anchor="end" fill="#78716C">CGPA UP TO SEM 4</text>
+    <text class="serif" x="860" y="278" font-size="40" letter-spacing="-1" text-anchor="end" fill="#1C1917">9.18</text>
+    <text class="sans" x="860" y="298" font-size="12" text-anchor="end" fill="#78716C">approximate</text>
+  </g>
+  <g class="bc">
+    <text class="sans" x="860" y="330" font-size="11" font-weight="700" letter-spacing="1.4" text-anchor="end" fill="#78716C">CGPA AFTER SEM 5</text>
+    <text class="serif" x="860" y="372" font-size="40" letter-spacing="-1" text-anchor="end" fill="#1C1917">9.34</text>
+    <text class="sans" x="860" y="392" font-size="12" text-anchor="end" fill="#78716C">with all A+ in Sem 5</text>
+  </g>
+  <line x1="40" y1="410" x2="860" y2="410" stroke="#E7E0D2"/>
+
+  <!-- step 3 -->
+  <g class="c">
+    <text class="sans" x="40" y="436" font-size="11" font-weight="700" letter-spacing="1.4" fill="#D97706">STEP 3 · TARGET CGPA</text>
+    <text class="sans" x="40" y="478" font-size="15" font-weight="600" fill="#1C1917">I want a CGPA of</text>
+    <rect x="190" y="456" width="110" height="36" rx="10" fill="#FDFBF6" stroke="#D97706" stroke-width="2"/>
+  </g>
+  <text class="sans t1" x="245" y="480" font-size="18" font-weight="700" text-anchor="middle" fill="#1C1917">9.30</text>
+  <text class="sans t2" x="245" y="480" font-size="18" font-weight="700" text-anchor="middle" fill="#1C1917">9.40</text>
+
+  <!-- verdict: reachable -->
+  <g class="v1">
+    <rect x="40" y="508" width="820" height="106" rx="12" fill="#DBEAFE"/>
+    <text class="sans" x="64" y="536" font-size="12" font-weight="700" letter-spacing="1.4" fill="#1E3A8A" opacity=".8">REQUIRED SGPA IN SEMESTER 5</text>
+    <text class="serif" x="64" y="590" font-size="52" letter-spacing="-1" fill="#1E3A8A">9.80</text>
+    <text class="sans" x="220" y="580" font-size="15" fill="#1E3A8A">That means almost all A+.</text>
+  </g>
+  <!-- verdict: out of reach -->
+  <g class="v2">
+    <rect x="40" y="508" width="820" height="106" rx="12" fill="#FEE2E2"/>
+    <text class="sans" x="64" y="536" font-size="12" font-weight="700" letter-spacing="1.4" fill="#7F1D1D" opacity=".8">REQUIRED SGPA</text>
+    <text class="serif" x="64" y="590" font-size="52" letter-spacing="-1" fill="#7F1D1D">10.30</text>
+    <text class="sans" x="250" y="574" font-size="15" fill="#7F1D1D">Not possible in one semester.</text>
+    <text class="sans" x="250" y="596" font-size="15" fill="#7F1D1D">Even a perfect 10.00 SGPA gets you to 9.34.</text>
+  </g>
+</svg>
