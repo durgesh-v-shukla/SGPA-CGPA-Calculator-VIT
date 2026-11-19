@@ -143,9 +143,35 @@ select:focus,input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0
 
 /* Previous semesters grid */
 .sem-head,.sem-row{
-  display:grid;grid-template-columns:72px 1fr 1fr;gap:10px;align-items:center;
+  display:grid;grid-template-columns:72px minmax(0,240px);gap:10px;align-items:center;
   padding:0 20px;
 }
+.credits-on .sem-head,.credits-on .sem-row{grid-template-columns:72px 1fr 1fr}
+.cr-col{display:none}
+.credits-on .cr-col{display:block}
+
+/* Credits toggle */
+.toggle-row{
+  display:flex;align-items:center;gap:14px;
+  margin:14px 20px 0;padding:12px 14px;
+  background:#FDFBF6;border:1px solid var(--line);border-radius:12px;
+}
+.toggle-title{font-weight:600;font-size:14px}
+.toggle-sub{font-size:12.5px;color:var(--ink3);margin-top:1px}
+.switch{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;cursor:pointer}
+.switch input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:1}
+.track{
+  position:absolute;inset:0;border-radius:26px;background:#D6D3D1;
+  transition:background .2s;
+}
+.track::after{
+  content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s;
+}
+.switch input:checked + .track{background:var(--amber)}
+.switch input:checked + .track::after{transform:translateX(20px)}
+.switch input:focus-visible + .track{outline:2px solid var(--amber);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.track,.track::after{transition:none}}
 .sem-head{
   padding-top:14px;padding-bottom:6px;
   font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);
@@ -196,7 +222,9 @@ footer a:hover{text-decoration:underline}
 @media(max-width:480px){
   .row{padding:12px 16px}
   .card-head,.chips,.result,.target-box{padding-left:16px;padding-right:16px}
-  .sem-head,.sem-row{padding-left:16px;padding-right:16px;grid-template-columns:60px 1fr 1fr}
+  .sem-head,.sem-row{padding-left:16px;padding-right:16px;grid-template-columns:60px minmax(0,1fr)}
+  .credits-on .sem-head,.credits-on .sem-row{grid-template-columns:60px 1fr 1fr}
+  .toggle-row{margin-left:16px;margin-right:16px}
   .fine{padding-left:16px;padding-right:16px}
   select{width:100px}
 }
@@ -249,12 +277,24 @@ footer a:hover{text-decoration:underline}
   <div class="card-head">
     <div class="step">Step 2</div>
     <h2>Previous 4 semesters</h2>
-    <p>Enter the SGPA from each marksheet. Credits make the CGPA exact.</p>
+    <p>Just enter the SGPA from each marksheet. That's all you need.</p>
   </div>
 
-  <div class="sem-head"><span></span><span>SGPA</span><span>Credits</span></div>
-  <div id="prevSems"></div>
-  <p class="fine" id="prevNote">Enter the SGPA for all 4 semesters. Credits make the result exact.</p>
+  <div class="toggle-row">
+    <label class="switch" aria-label="I know my credits">
+      <input type="checkbox" id="useCredits"/><span class="track"></span>
+    </label>
+    <div>
+      <div class="toggle-title">I know my credits</div>
+      <div class="toggle-sub">Optional. Adds a credits column and makes the result exact.</div>
+    </div>
+  </div>
+
+  <div id="semBox">
+    <div class="sem-head"><span></span><span>SGPA</span><span class="cr-col">Credits</span></div>
+    <div id="prevSems"></div>
+  </div>
+  <p class="fine" id="prevNote">Enter the SGPA for all 4 semesters.</p>
   <p class="warn" id="warn" hidden role="alert"></p>
 
   <div class="result">
@@ -327,7 +367,7 @@ const GRADES = [
 const SEM5_CREDITS = SUBJECTS.reduce((a,s)=>a+s.credits,0);
 const KEY = 'vit_calc_v2';
 
-let state = { grades:{}, prev:[{},{},{},{}], target:'' };
+let state = { grades:{}, prev:[{},{},{},{}], target:'', useCredits:false };
 
 // ── Storage ───────────────────────────────────────
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
@@ -340,6 +380,7 @@ function load(){
       state.grades = s.grades || {};
       state.prev = Array.isArray(s.prev) && s.prev.length===4 ? s.prev : state.prev;
       state.target = s.target || '';
+      state.useCredits = !!s.useCredits;
     }
   }catch(e){}
 }
@@ -378,7 +419,7 @@ function buildPrev(){
       <span class="label">Sem ${i+1}</span>
       <input type="number" min="0" max="10" step="0.01" inputmode="decimal" placeholder="e.g. 9.2"
              data-i="${i}" data-f="sgpa" value="${p.sgpa??''}" aria-label="Semester ${i+1} SGPA"/>
-      <input type="number" min="0" step="1" inputmode="numeric" placeholder="e.g. 22"
+      <input class="cr-col" type="number" min="0" step="1" inputmode="numeric" placeholder="e.g. 22"
              data-i="${i}" data-f="cr" value="${p.cr??''}" aria-label="Semester ${i+1} credits"/>
     </div>`).join('');
   document.querySelectorAll('#prevSems input').forEach(inp=>{
@@ -408,7 +449,7 @@ function prevTotals(){
   const cr = state.prev.map(p=>num(p.cr));
   const valid = sg.every(okSgpa);
   if(!valid) return {valid:false};
-  const weighted = cr.every(okCr);
+  const weighted = state.useCredits && cr.every(okCr);
   const sumSgpa = sg.reduce((a,b)=>a+b,0);
   const sumPts  = weighted ? sg.reduce((a,v,i)=>a+v*cr[i],0) : 0;
   const sumCr   = weighted ? cr.reduce((a,b)=>a+b,0) : 0;
@@ -426,7 +467,7 @@ function validateInputs(){
     const raw = state.prev[i][f];
     const empty = raw===''||raw==null;
     const v = num(raw);
-    const bad = !empty && (f==='sgpa' ? !okSgpa(v) : !okCr(v));
+    const bad = !empty && (f==='sgpa' ? !okSgpa(v) : (state.useCredits && !okCr(v)));
     inp.classList.toggle('invalid', bad);
     if(bad) msgs.push(f==='sgpa'
       ? `Sem ${i+1} SGPA must be between 0 and 10.`
@@ -485,15 +526,17 @@ function update(){
     $('prevNote').innerHTML = `<strong>CGPA up to Sem 4: ${fmt(prev.upTo4)}</strong> `
       + (prev.weighted
           ? '(credit-weighted). Check that this matches your marksheet.'
-          : '(approximate). Add credits for all 4 semesters to make it exact.');
+          : state.useCredits
+            ? '(approximate). Enter the credits for all 4 semesters to make it exact.'
+            : '(approximate, a simple average). It may differ slightly from your marksheet. Turn on the toggle above if you know your credits.');
   }else{
-    $('prevNote').textContent = 'Enter the SGPA for all 4 semesters. Credits make the result exact.';
+    $('prevNote').textContent = 'Enter the SGPA for all 4 semesters.';
   }
 
   // CGPA
   if(prev.valid && s.sgpa!==null){
     $('cgpa').textContent = fmt(cgpaWith(prev, s.sgpa, s.cr));
-    $('cgpaNote').textContent = (prev.weighted ? 'Exact, credit-weighted' : 'Approximate, add credits for exact')
+    $('cgpaNote').textContent = (prev.weighted ? 'Exact, credit-weighted' : 'Approximate (simple average of SGPAs)')
       + (s.complete ? '' : ' · Sem 5 not fully graded yet');
   }else{
     $('cgpa').textContent = '—';
@@ -515,7 +558,9 @@ function update(){
   }
   const req = requiredSgpa(prev, t);
   const best = cgpaWith(prev, 10, SEM5_CREDITS);
-  const approx = prev.weighted ? '' : ' <em>Approximate: add credits for exact.</em>';
+  const approx = prev.weighted ? '' : (state.useCredits
+    ? ' <em>Approximate. Enter all 4 credits for an exact answer.</em>'
+    : ' <em>Approximate. Turn on "I know my credits" in Step 2 for an exact answer.</em>');
   if(req>10){
     v.className = 'verdict bad';
     v.innerHTML = `<div class="lead">Required SGPA</div>
@@ -555,6 +600,14 @@ $('resetGrades').addEventListener('click',()=>{
   state.grades = {}; save(); buildSubjects(); update();
 });
 
+function applyToggle(){
+  $('semBox').classList.toggle('credits-on', state.useCredits);
+}
+$('useCredits').addEventListener('change', e=>{
+  state.useCredits = e.target.checked;
+  save(); applyToggle(); update();
+});
+
 $('target').addEventListener('input', e=>{
   state.target = e.target.value; save(); update();
 });
@@ -584,10 +637,27 @@ const QUOTES = [
   {e:'🥲', t:'F is not a grade. F is a plot device for next semester\'s comeback arc.'},
   {e:'⏳', t:'<strong>Pro tip:</strong> doing the math early feels bad. Doing it after results feels worse.'},
 ];
-let qIdx = Math.floor(Math.random()*QUOTES.length);
+// Shuffle-bag: every quote shows once in random order before any repeats,
+// and a new visit starts at a random point instead of the same quote.
+let bag = [], qIdx = -1;
+function nextQuote(){
+  if(bag.length===0){
+    bag = QUOTES.map((_,i)=>i);
+    for(let i=bag.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [bag[i],bag[j]] = [bag[j],bag[i]];
+    }
+    // never show the same quote twice in a row across two bags
+    if(bag.length>1 && bag[bag.length-1]===qIdx){
+      [bag[0],bag[bag.length-1]] = [bag[bag.length-1],bag[0]];
+    }
+  }
+  qIdx = bag.pop();
+}
 function showQuote(animate){
   const box = $('quote');
   const apply = ()=>{
+    nextQuote();
     const q = QUOTES[qIdx];
     $('qText').innerHTML = q.t;
     $('qEmoji').textContent = q.e;
@@ -595,7 +665,7 @@ function showQuote(animate){
   };
   if(!animate){ apply(); return; }
   box.classList.add('fade');
-  setTimeout(()=>{ qIdx = (qIdx+1)%QUOTES.length; apply(); }, 320);
+  setTimeout(apply, 320);
 }
 $('quote').addEventListener('click', ()=>showQuote(true));
 $('quote').style.cursor = 'pointer';
@@ -608,6 +678,8 @@ load();
 buildSubjects();
 buildPrev();
 $('target').value = state.target;
+$('useCredits').checked = state.useCredits;
+applyToggle();
 update();
 </script>
 </body>
